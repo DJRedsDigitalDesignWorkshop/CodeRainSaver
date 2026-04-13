@@ -1,0 +1,654 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		12B709B80DD089F28712560E /* ScreenSaver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 997347F3458D45900586DD8C /* ScreenSaver.framework */; };
+		1E758825124AE371B9007AA4 /* ScreenSaver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 997347F3458D45900586DD8C /* ScreenSaver.framework */; };
+		28514270DA7674FC241FECCD /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C808B449B749639189ACB723 /* AppKit.framework */; };
+		29F961A855A427BFFBB5ADFE /* CodeRainSaverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F39B4AB1AC255998D303B0 /* CodeRainSaverView.swift */; };
+		76692743E7560BBA6966888C /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C808B449B749639189ACB723 /* AppKit.framework */; };
+		99324BFCB221B23706DC0543 /* CodeRainSaverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F39B4AB1AC255998D303B0 /* CodeRainSaverView.swift */; };
+		A2321F63E4AB2DB755FC547E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E16349EB8C8C46A29654CB6 /* Assets.xcassets */; };
+		AF79EFA83DCEFA2CD387B1CF /* ScreenSaver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 997347F3458D45900586DD8C /* ScreenSaver.framework */; };
+		B3E50F639EE872F1AF548733 /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EF00FCDF275D7AE02396E81 /* main.swift */; };
+		B83D4CDA37C69E84147C932F /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C808B449B749639189ACB723 /* AppKit.framework */; };
+		C2840CE8A0FA2F30D09793A4 /* CodeRainSaverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F39B4AB1AC255998D303B0 /* CodeRainSaverView.swift */; };
+		D4BB1D511A82FD26FEE59045 /* ScreenSaver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 997347F3458D45900586DD8C /* ScreenSaver.framework */; };
+		F0A41D1B3F4E5EB4FEC046A6 /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C808B449B749639189ACB723 /* AppKit.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		042EE1DC3E00D1A5CE3B8BEC /* CodeRainCatalina.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CodeRainCatalina.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		25DDDDEB4393957FA5B88B56 /* CodeRainIntel.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CodeRainIntel.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		5EF00FCDF275D7AE02396E81 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		75F39B4AB1AC255998D303B0 /* CodeRainSaverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeRainSaverView.swift; sourceTree = "<group>"; };
+		80D085B3029D152368AA06CB /* CodeRainSaver.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CodeRainSaver.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		8E16349EB8C8C46A29654CB6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		997347F3458D45900586DD8C /* ScreenSaver.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ScreenSaver.framework; path = System/Library/Frameworks/ScreenSaver.framework; sourceTree = SDKROOT; };
+		C808B449B749639189ACB723 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		E97E57D8016736CDD1B9CB6C /* CodeRainControl.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CodeRainControl.app; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		680658D7F2E77693E2FF9555 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AF79EFA83DCEFA2CD387B1CF /* ScreenSaver.framework in Frameworks */,
+				28514270DA7674FC241FECCD /* AppKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		834769F68CCA4F2ED456D673 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				76692743E7560BBA6966888C /* AppKit.framework in Frameworks */,
+				12B709B80DD089F28712560E /* ScreenSaver.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A23DDFC210329C0C8049E658 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1E758825124AE371B9007AA4 /* ScreenSaver.framework in Frameworks */,
+				F0A41D1B3F4E5EB4FEC046A6 /* AppKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FC63E342D3C544173E87CF5F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D4BB1D511A82FD26FEE59045 /* ScreenSaver.framework in Frameworks */,
+				B83D4CDA37C69E84147C932F /* AppKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		168E9E8A265A8562607A9BD4 = {
+			isa = PBXGroup;
+			children = (
+				5AB6107485245B095172D584 /* ControlApp */,
+				D447510313938F9AEB841F65 /* Sources */,
+				D9DF505EFAC8246B12C885FB /* Frameworks */,
+				E76DBCD60E6E42DE9D263852 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		5AB6107485245B095172D584 /* ControlApp */ = {
+			isa = PBXGroup;
+			children = (
+				8E16349EB8C8C46A29654CB6 /* Assets.xcassets */,
+				5EF00FCDF275D7AE02396E81 /* main.swift */,
+			);
+			path = ControlApp;
+			sourceTree = "<group>";
+		};
+		5FF6C462ADB62FADD5D596B9 /* CodeRainSaver */ = {
+			isa = PBXGroup;
+			children = (
+				75F39B4AB1AC255998D303B0 /* CodeRainSaverView.swift */,
+			);
+			path = CodeRainSaver;
+			sourceTree = "<group>";
+		};
+		D447510313938F9AEB841F65 /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				5FF6C462ADB62FADD5D596B9 /* CodeRainSaver */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		D9DF505EFAC8246B12C885FB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				C808B449B749639189ACB723 /* AppKit.framework */,
+				997347F3458D45900586DD8C /* ScreenSaver.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		E76DBCD60E6E42DE9D263852 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				042EE1DC3E00D1A5CE3B8BEC /* CodeRainCatalina.bundle */,
+				E97E57D8016736CDD1B9CB6C /* CodeRainControl.app */,
+				25DDDDEB4393957FA5B88B56 /* CodeRainIntel.bundle */,
+				80D085B3029D152368AA06CB /* CodeRainSaver.bundle */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		3E5DA169891BC63FA5301A67 /* CodeRainSaver */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = E10D9D6AE1242075FF697261 /* Build configuration list for PBXNativeTarget "CodeRainSaver" */;
+			buildPhases = (
+				4CDB9CD2E1D3B49C72111053 /* Sources */,
+				A23DDFC210329C0C8049E658 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CodeRainSaver;
+			packageProductDependencies = (
+			);
+			productName = CodeRainSaver;
+			productReference = 80D085B3029D152368AA06CB /* CodeRainSaver.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+		4580DBABCBB4BC3FAF70BF79 /* CodeRainIntel */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 0C8D39A9045C8237345E4293 /* Build configuration list for PBXNativeTarget "CodeRainIntel" */;
+			buildPhases = (
+				E13C26312BDC25CF3DF6B9C2 /* Sources */,
+				FC63E342D3C544173E87CF5F /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CodeRainIntel;
+			packageProductDependencies = (
+			);
+			productName = CodeRainIntel;
+			productReference = 25DDDDEB4393957FA5B88B56 /* CodeRainIntel.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+		74ABE99E5FF89B31210DBB95 /* CodeRainCatalina */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 35EBF90EE1D3062799CD0A1D /* Build configuration list for PBXNativeTarget "CodeRainCatalina" */;
+			buildPhases = (
+				08757577E7E8195151D13AE3 /* Sources */,
+				680658D7F2E77693E2FF9555 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CodeRainCatalina;
+			packageProductDependencies = (
+			);
+			productName = CodeRainCatalina;
+			productReference = 042EE1DC3E00D1A5CE3B8BEC /* CodeRainCatalina.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
+		E801E4C601E8548660790F47 /* CodeRainControl */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 51005BA1369D3CF3A704D08E /* Build configuration list for PBXNativeTarget "CodeRainControl" */;
+			buildPhases = (
+				3425E10255ACA33F2234ED2E /* Sources */,
+				8BB51D78E0C4FEDF890F989F /* Resources */,
+				834769F68CCA4F2ED456D673 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CodeRainControl;
+			packageProductDependencies = (
+			);
+			productName = CodeRainControl;
+			productReference = E97E57D8016736CDD1B9CB6C /* CodeRainControl.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3B8EC040897E60CF6ECD2A38 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					3E5DA169891BC63FA5301A67 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+					4580DBABCBB4BC3FAF70BF79 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+					74ABE99E5FF89B31210DBB95 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+					E801E4C601E8548660790F47 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 7019555AC1300F33A9F5781A /* Build configuration list for PBXProject "CodeRainSaver" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 168E9E8A265A8562607A9BD4;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				74ABE99E5FF89B31210DBB95 /* CodeRainCatalina */,
+				E801E4C601E8548660790F47 /* CodeRainControl */,
+				4580DBABCBB4BC3FAF70BF79 /* CodeRainIntel */,
+				3E5DA169891BC63FA5301A67 /* CodeRainSaver */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		8BB51D78E0C4FEDF890F989F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A2321F63E4AB2DB755FC547E /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		08757577E7E8195151D13AE3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C2840CE8A0FA2F30D09793A4 /* CodeRainSaverView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		3425E10255ACA33F2234ED2E /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B3E50F639EE872F1AF548733 /* main.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		4CDB9CD2E1D3B49C72111053 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				29F961A855A427BFFBB5ADFE /* CodeRainSaverView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		E13C26312BDC25CF3DF6B9C2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				99324BFCB221B23706DC0543 /* CodeRainSaverView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		1B4CB3A6B369599B8EF1FA95 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_APPINTENTS_DEPLOYMENT_AWARE_PROCESSING = NO;
+				ENABLE_ASSISTANT_INTENTS_PROVIDER_VALIDATION = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "";
+				LM_ENABLE_LINK_GENERATION = NO;
+				LM_FILTER_WARNINGS = YES;
+				MACH_O_TYPE = mh_bundle;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.justinmarsh.coderainsaver;
+				PRODUCT_NAME = CodeRainSaver;
+				SDKROOT = macosx;
+				SKIP_INSTALL = NO;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
+				WRAPPER_EXTENSION = saver;
+			};
+			name = Debug;
+		};
+		3080B53858ADE4F8260D76E6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "";
+				CODE_SIGN_ENTITLEMENTS = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "";
+				INFOPLIST_KEY_CFBundleDisplayName = CodeRainControl;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSMainNibFile = "";
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACH_O_TYPE = mh_execute;
+				PRODUCT_BUNDLE_IDENTIFIER = com.justinmarsh.coderaincontrol;
+				PRODUCT_MODULE_NAME = CodeRainControl;
+				PRODUCT_NAME = CodeRainControl;
+				SDKROOT = macosx;
+				SKIP_INSTALL = NO;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		35934A4FE82C0B3AE7AD290C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_MODULE_NAME = CodeRainSaver;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		4B5F17FA82B70A5CE012A6E5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = x86_64;
+				COMBINE_HIDPI_IMAGES = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.justinmarsh.coderaincatalina;
+				PRODUCT_MODULE_NAME = CodeRainCatalina;
+				PRODUCT_NAME = CodeRainCatalina;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		6DE83661ECCF22AEA9AA113A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = x86_64;
+				COMBINE_HIDPI_IMAGES = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.justinmarsh.coderaincatalina;
+				PRODUCT_MODULE_NAME = CodeRainCatalina;
+				PRODUCT_NAME = CodeRainCatalina;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		B7CB2942360A9DB798772E52 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = x86_64;
+				COMBINE_HIDPI_IMAGES = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.justinmarsh.coderainintel;
+				PRODUCT_MODULE_NAME = CodeRainIntel;
+				PRODUCT_NAME = CodeRainIntel;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		E0FB42BEA56A84E5E9D4641A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = x86_64;
+				COMBINE_HIDPI_IMAGES = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.justinmarsh.coderainintel;
+				PRODUCT_MODULE_NAME = CodeRainIntel;
+				PRODUCT_NAME = CodeRainIntel;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		EC43CFBE714E5D14FC2DF5A2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COPY_PHASE_STRIP = YES;
+				DEAD_CODE_STRIPPING = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = "";
+				ENABLE_APPINTENTS_DEPLOYMENT_AWARE_PROCESSING = NO;
+				ENABLE_ASSISTANT_INTENTS_PROVIDER_VALIDATION = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "";
+				LM_ENABLE_LINK_GENERATION = NO;
+				LM_FILTER_WARNINGS = YES;
+				MACH_O_TYPE = mh_bundle;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.justinmarsh.coderainsaver;
+				PRODUCT_NAME = CodeRainSaver;
+				SDKROOT = macosx;
+				SKIP_INSTALL = NO;
+				STRIP_INSTALLED_PRODUCT = YES;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-Osize";
+				SWIFT_VERSION = 6.0;
+				WRAPPER_EXTENSION = saver;
+			};
+			name = Release;
+		};
+		F8553796C38CD3B0DE69D7B4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = "";
+				CODE_SIGN_ENTITLEMENTS = "";
+				COMBINE_HIDPI_IMAGES = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "";
+				INFOPLIST_KEY_CFBundleDisplayName = CodeRainControl;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
+				INFOPLIST_KEY_NSMainNibFile = "";
+				INFOPLIST_KEY_NSPrincipalClass = NSApplication;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				MACH_O_TYPE = mh_execute;
+				PRODUCT_BUNDLE_IDENTIFIER = com.justinmarsh.coderaincontrol;
+				PRODUCT_MODULE_NAME = CodeRainControl;
+				PRODUCT_NAME = CodeRainControl;
+				SDKROOT = macosx;
+				SKIP_INSTALL = NO;
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		FC367BF967B913874D0B9DB9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				PRODUCT_MODULE_NAME = CodeRainSaver;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		0C8D39A9045C8237345E4293 /* Build configuration list for PBXNativeTarget "CodeRainIntel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				E0FB42BEA56A84E5E9D4641A /* Debug */,
+				B7CB2942360A9DB798772E52 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		35EBF90EE1D3062799CD0A1D /* Build configuration list for PBXNativeTarget "CodeRainCatalina" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6DE83661ECCF22AEA9AA113A /* Debug */,
+				4B5F17FA82B70A5CE012A6E5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		51005BA1369D3CF3A704D08E /* Build configuration list for PBXNativeTarget "CodeRainControl" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F8553796C38CD3B0DE69D7B4 /* Debug */,
+				3080B53858ADE4F8260D76E6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		7019555AC1300F33A9F5781A /* Build configuration list for PBXProject "CodeRainSaver" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1B4CB3A6B369599B8EF1FA95 /* Debug */,
+				EC43CFBE714E5D14FC2DF5A2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		E10D9D6AE1242075FF697261 /* Build configuration list for PBXNativeTarget "CodeRainSaver" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FC367BF967B913874D0B9DB9 /* Debug */,
+				35934A4FE82C0B3AE7AD290C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 3B8EC040897E60CF6ECD2A38 /* Project object */;
+}

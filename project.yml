@@ -1,0 +1,124 @@
+name: CodeRainSaver
+options:
+  bundleIdPrefix: com.justinmarsh
+  deploymentTarget:
+    macOS: "15.0"
+  developmentLanguage: en
+  createIntermediateGroups: true
+  xcodeVersion: "16.0"
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Automatic
+    INFOPLIST_FILE: Info.plist
+    GENERATE_INFOPLIST_FILE: NO
+    PRODUCT_BUNDLE_IDENTIFIER: com.justinmarsh.coderainsaver
+    PRODUCT_NAME: CodeRainSaver
+    MACH_O_TYPE: mh_bundle
+    WRAPPER_EXTENSION: saver
+    SKIP_INSTALL: NO
+    LD_RUNPATH_SEARCH_PATHS: ""
+    ENABLE_ASSISTANT_INTENTS_PROVIDER_VALIDATION: NO
+    ENABLE_APPINTENTS_DEPLOYMENT_AWARE_PROCESSING: NO
+    LM_FILTER_WARNINGS: YES
+    LM_ENABLE_LINK_GENERATION: NO
+    ONLY_ACTIVE_ARCH: YES
+  configs:
+    Debug:
+      SWIFT_OPTIMIZATION_LEVEL: "-O"
+    Release:
+      SWIFT_COMPILATION_MODE: wholemodule
+      SWIFT_OPTIMIZATION_LEVEL: "-Osize"
+      COPY_PHASE_STRIP: YES
+      STRIP_INSTALLED_PRODUCT: YES
+      DEAD_CODE_STRIPPING: YES
+      DEBUG_INFORMATION_FORMAT: dwarf
+      GCC_GENERATE_DEBUGGING_SYMBOLS: NO
+
+schemes:
+  CodeRainSaver:
+    build:
+      targets:
+        CodeRainSaver: all
+  CodeRainCatalina:
+    build:
+      targets:
+        CodeRainCatalina: all
+  CodeRainIntel:
+    build:
+      targets:
+        CodeRainIntel: all
+  CodeRainControl:
+    build:
+      targets:
+        CodeRainControl: all
+
+targets:
+  CodeRainSaver:
+    type: bundle
+    platform: macOS
+    sources:
+      - path: Sources
+    dependencies:
+      - sdk: ScreenSaver.framework
+      - sdk: AppKit.framework
+    settings:
+      base:
+        PRODUCT_MODULE_NAME: CodeRainSaver
+  CodeRainIntel:
+    type: bundle
+    platform: macOS
+    sources:
+      - path: Sources
+    dependencies:
+      - sdk: ScreenSaver.framework
+      - sdk: AppKit.framework
+    settings:
+      base:
+        PRODUCT_MODULE_NAME: CodeRainIntel
+        PRODUCT_BUNDLE_IDENTIFIER: com.justinmarsh.coderainintel
+        PRODUCT_NAME: CodeRainIntel
+        MACOSX_DEPLOYMENT_TARGET: "13.0"
+        ARCHS: x86_64
+        ONLY_ACTIVE_ARCH: NO
+  CodeRainCatalina:
+    type: bundle
+    platform: macOS
+    sources:
+      - path: Sources
+    dependencies:
+      - sdk: ScreenSaver.framework
+      - sdk: AppKit.framework
+    settings:
+      base:
+        PRODUCT_MODULE_NAME: CodeRainCatalina
+        PRODUCT_BUNDLE_IDENTIFIER: com.justinmarsh.coderaincatalina
+        PRODUCT_NAME: CodeRainCatalina
+        MACOSX_DEPLOYMENT_TARGET: "10.15"
+        ARCHS: x86_64
+        ONLY_ACTIVE_ARCH: NO
+  CodeRainControl:
+    type: application
+    platform: macOS
+    sources:
+      - path: ControlApp
+    dependencies:
+      - sdk: AppKit.framework
+      - sdk: ScreenSaver.framework
+    settings:
+      base:
+        PRODUCT_MODULE_NAME: CodeRainControl
+        PRODUCT_BUNDLE_IDENTIFIER: com.justinmarsh.coderaincontrol
+        PRODUCT_NAME: CodeRainControl
+        MACH_O_TYPE: mh_execute
+        WRAPPER_EXTENSION: app
+        SKIP_INSTALL: NO
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_FILE: ""
+        INFOPLIST_KEY_CFBundleDisplayName: CodeRainControl
+        INFOPLIST_KEY_LSApplicationCategoryType: public.app-category.utilities
+        INFOPLIST_KEY_NSPrincipalClass: NSApplication
+        INFOPLIST_KEY_NSMainNibFile: ""
+        ASSETCATALOG_COMPILER_APPICON_NAME: ""
+        CODE_SIGN_ENTITLEMENTS: ""
