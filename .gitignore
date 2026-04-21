@@ -3,6 +3,7 @@
 /build
 /build-*/
 /Packages
+/dist
 DerivedData/
 xcuserdata/
 *.xcworkspace

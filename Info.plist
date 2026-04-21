@@ -16,10 +16,10 @@
   <string>$(PRODUCT_NAME)</string>
   <key>CFBundlePackageType</key>
   <string>BNDL</string>
-    <key>CFBundleShortVersionString</key>
-    <string>1.0.8</string>
-    <key>CFBundleVersion</key>
-    <string>9</string>
+  <key>CFBundleShortVersionString</key>
+  <string>$(MARKETING_VERSION)</string>
+  <key>CFBundleVersion</key>
+  <string>$(CURRENT_PROJECT_VERSION)</string>
   <key>NSPrincipalClass</key>
   <string>CodeRainSaverView</string>
 </dict>
