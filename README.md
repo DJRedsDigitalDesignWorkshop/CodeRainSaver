@@ -1,3 +1,4 @@
+<img width="1920" height="1080" alt="Screenshot 2026-04-21 at 1 02 55 PM (2)" src="https://github.com/user-attachments/assets/85f27a90-b35b-4551-b544-698c3a8ed1c2" />
 # CodeRainSaver
 
 CodeRainSaver is a macOS screen saver project that recreates stylized green code rain with long readable trails, heavier VHS-like moire, and tuned stream timing.
