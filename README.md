@@ -46,10 +46,25 @@ DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer \
 xcodebuild -project CodeRainSaver.xcodeproj -scheme CodeRainIntel -configuration Release -destination 'generic/platform=macOS' build
 ```
 
-To build the installer packages:
+To build signed installer packages:
 
 ```sh
+PKG_SIGNING_IDENTITY="Developer ID Installer: Your Name (TEAMID)" \
 Scripts/build_release_installers.sh
+```
+
+Optional notarization:
+
+```sh
+PKG_SIGNING_IDENTITY="Developer ID Installer: Your Name (TEAMID)" \
+NOTARYTOOL_PROFILE="your-notarytool-profile" \
+Scripts/build_release_installers.sh
+```
+
+For local packaging tests only, you can opt into unsigned packages:
+
+```sh
+ALLOW_UNSIGNED_PACKAGES=1 Scripts/build_release_installers.sh
 ```
 
 ## Notes

@@ -31,8 +31,8 @@ private enum PreferenceKey: String, CaseIterable {
         case .speedMultiplier: return 0.25...2.2
         case .darkness: return 0.2...1.0
         case .moire: return 0.0...1.0
-        case .persistence: return 0.65...2.2
-        case .density: return 0.45...1.6
+        case .persistence: return 0.65...4.0
+        case .density: return 0.45...2.2
         case .glow: return 0.15...1.4
         case .glyphScale: return 0.7...1.55
         }
@@ -112,13 +112,31 @@ private struct Preferences {
         ]
     }
 
+    static func sanitizedValue(_ rawValue: Double, for key: PreferenceKey, fallback: Double) -> Double {
+        guard rawValue.isFinite else { return fallback }
+        let range = key.range
+        return min(max(rawValue, range.lowerBound), range.upperBound)
+    }
+
+    func sanitized() -> Preferences {
+        var sanitizedPreferences = self
+        for key in PreferenceKey.allCases {
+            let fallback = Self.standard.value(for: key)
+            sanitizedPreferences.setValue(
+                Self.sanitizedValue(value(for: key), for: key, fallback: fallback),
+                for: key
+            )
+        }
+        return sanitizedPreferences
+    }
+
     init(dictionary: [String: Any]) {
         func value(_ key: PreferenceKey, fallback: Double) -> Double {
             if let number = dictionary[key.rawValue] as? NSNumber {
-                return number.doubleValue
+                return Self.sanitizedValue(number.doubleValue, for: key, fallback: fallback)
             }
             if let value = dictionary[key.rawValue] as? Double {
-                return value
+                return Self.sanitizedValue(value, for: key, fallback: fallback)
             }
             return fallback
         }
@@ -172,11 +190,12 @@ private final class SettingsViewController: NSViewController {
             density: defaults.double(forKey: PreferenceKey.density.rawValue),
             glow: defaults.double(forKey: PreferenceKey.glow.rawValue),
             glyphScale: defaults.double(forKey: PreferenceKey.glyphScale.rawValue)
-        )
+        ).sanitized()
         writeSharedPreferences(preferences)
     }
 
     private func savePreferences() {
+        preferences = preferences.sanitized()
         if let defaults = ScreenSaverDefaults(forModuleWithName: moduleName) {
             for (key, value) in preferences.dictionary() {
                 defaults.set(value, forKey: key)
@@ -208,7 +227,7 @@ private final class SettingsViewController: NSViewController {
             return nil
         }
 
-        return Preferences(dictionary: dictionary)
+        return Preferences(dictionary: dictionary).sanitized()
     }
 
     private func writeSharedPreferences(_ preferences: Preferences) {
