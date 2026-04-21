@@ -3,6 +3,8 @@
 
 CodeRainSaver is a macOS screen saver project that recreates stylized green code rain with long readable trails, heavier VHS-like moire, and tuned stream timing.
 
+This is THE BEST matrix code screen saver that works with macos tahoe.  Its also the only one.  Enjoy. 
+
 ## Release Builds
 
 This repository ships two supported installer builds:
