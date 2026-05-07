@@ -9,15 +9,15 @@ This is THE BEST matrix code screen saver that works with macos tahoe.  Its also
 
 This repository ships two supported installer builds:
 
-- `CodeRainSaver`: the main modern build for current macOS releases.
+- `CodeRainAppleSilicon`: the native Apple Silicon build for current macOS releases.
 - `CodeRainIntel`: the Intel-compatible build for macOS Ventura 13.
 
 Both are packaged as standalone `.pkg` installers in the release artifacts so they are easy to distinguish before download.
 
 ## Included In Public Releases
 
-- `CodeRainSaver-1.1.0-macOS15-plus.pkg`
-- `CodeRainIntel-1.1.0-Ventura-Intel.pkg`
+- `CodeRainAppleSilicon-1.1.3-Apple-Silicon.pkg`
+- `CodeRainIntel-1.1.3-Ventura-Intel.pkg`
 
 The experimental `CodeRainCatalina` target stays in the source tree, but it is not part of the public release set.
 
@@ -41,6 +41,9 @@ Then build the release bundles:
 ```sh
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer \
 xcodebuild -project CodeRainSaver.xcodeproj -scheme CodeRainSaver -configuration Release -destination 'generic/platform=macOS' build
+
+DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer \
+xcodebuild -project CodeRainSaver.xcodeproj -scheme CodeRainAppleSilicon -configuration Release -destination 'generic/platform=macOS' build
 
 DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer \
 xcodebuild -project CodeRainSaver.xcodeproj -scheme CodeRainIntel -configuration Release -destination 'generic/platform=macOS' build

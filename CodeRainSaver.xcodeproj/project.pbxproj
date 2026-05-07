@@ -7,11 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		105D56FF6CBE9C0349F6FCDC /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C808B449B749639189ACB723 /* AppKit.framework */; };
 		12B709B80DD089F28712560E /* ScreenSaver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 997347F3458D45900586DD8C /* ScreenSaver.framework */; };
 		1E758825124AE371B9007AA4 /* ScreenSaver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 997347F3458D45900586DD8C /* ScreenSaver.framework */; };
 		28514270DA7674FC241FECCD /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C808B449B749639189ACB723 /* AppKit.framework */; };
 		29F961A855A427BFFBB5ADFE /* CodeRainSaverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F39B4AB1AC255998D303B0 /* CodeRainSaverView.swift */; };
+		66387011D5CBC32DE3AC3BED /* CodeRainSaverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F39B4AB1AC255998D303B0 /* CodeRainSaverView.swift */; };
 		76692743E7560BBA6966888C /* AppKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C808B449B749639189ACB723 /* AppKit.framework */; };
+		7E106884E17F0D5E6247DCB5 /* ScreenSaver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 997347F3458D45900586DD8C /* ScreenSaver.framework */; };
 		99324BFCB221B23706DC0543 /* CodeRainSaverView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 75F39B4AB1AC255998D303B0 /* CodeRainSaverView.swift */; };
 		A2321F63E4AB2DB755FC547E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8E16349EB8C8C46A29654CB6 /* Assets.xcassets */; };
 		AF79EFA83DCEFA2CD387B1CF /* ScreenSaver.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 997347F3458D45900586DD8C /* ScreenSaver.framework */; };
@@ -25,6 +28,7 @@
 /* Begin PBXFileReference section */
 		042EE1DC3E00D1A5CE3B8BEC /* CodeRainCatalina.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CodeRainCatalina.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		25DDDDEB4393957FA5B88B56 /* CodeRainIntel.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CodeRainIntel.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		3507880CF500B798B5A1ED6C /* CodeRainAppleSilicon.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CodeRainAppleSilicon.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		5EF00FCDF275D7AE02396E81 /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		75F39B4AB1AC255998D303B0 /* CodeRainSaverView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CodeRainSaverView.swift; sourceTree = "<group>"; };
 		80D085B3029D152368AA06CB /* CodeRainSaver.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CodeRainSaver.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -35,6 +39,15 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		3B81D1FBAD0CC6B2EF25F41B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7E106884E17F0D5E6247DCB5 /* ScreenSaver.framework in Frameworks */,
+				105D56FF6CBE9C0349F6FCDC /* AppKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		680658D7F2E77693E2FF9555 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -121,6 +134,7 @@
 		E76DBCD60E6E42DE9D263852 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				3507880CF500B798B5A1ED6C /* CodeRainAppleSilicon.bundle */,
 				042EE1DC3E00D1A5CE3B8BEC /* CodeRainCatalina.bundle */,
 				E97E57D8016736CDD1B9CB6C /* CodeRainControl.app */,
 				25DDDDEB4393957FA5B88B56 /* CodeRainIntel.bundle */,
@@ -186,6 +200,24 @@
 			productReference = 042EE1DC3E00D1A5CE3B8BEC /* CodeRainCatalina.bundle */;
 			productType = "com.apple.product-type.bundle";
 		};
+		7BB1FEC7FA4A1AEC8E0D28AE /* CodeRainAppleSilicon */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C792BF24E92F034215729B3D /* Build configuration list for PBXNativeTarget "CodeRainAppleSilicon" */;
+			buildPhases = (
+				D5B0DD034D1911175F1CEC7F /* Sources */,
+				3B81D1FBAD0CC6B2EF25F41B /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CodeRainAppleSilicon;
+			packageProductDependencies = (
+			);
+			productName = CodeRainAppleSilicon;
+			productReference = 3507880CF500B798B5A1ED6C /* CodeRainAppleSilicon.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
 		E801E4C601E8548660790F47 /* CodeRainControl */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 51005BA1369D3CF3A704D08E /* Build configuration list for PBXNativeTarget "CodeRainControl" */;
@@ -226,6 +258,10 @@
 						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
+					7BB1FEC7FA4A1AEC8E0D28AE = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
 					E801E4C601E8548660790F47 = {
 						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
@@ -246,6 +282,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				7BB1FEC7FA4A1AEC8E0D28AE /* CodeRainAppleSilicon */,
 				74ABE99E5FF89B31210DBB95 /* CodeRainCatalina */,
 				E801E4C601E8548660790F47 /* CodeRainControl */,
 				4580DBABCBB4BC3FAF70BF79 /* CodeRainIntel */,
@@ -290,6 +327,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		D5B0DD034D1911175F1CEC7F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				66387011D5CBC32DE3AC3BED /* CodeRainSaverView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		E13C26312BDC25CF3DF6B9C2 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -305,7 +350,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 13;
 				DEVELOPMENT_TEAM = "";
 				ENABLE_APPINTENTS_DEPLOYMENT_AWARE_PROCESSING = NO;
 				ENABLE_ASSISTANT_INTENTS_PROVIDER_VALIDATION = NO;
@@ -316,7 +361,7 @@
 				LM_FILTER_WARNINGS = YES;
 				MACH_O_TYPE = mh_bundle;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.1.3;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.justinmarsh.coderainsaver;
 				PRODUCT_NAME = CodeRainSaver;
@@ -327,6 +372,18 @@
 				WRAPPER_EXTENSION = saver;
 			};
 			name = Debug;
+		};
+		1BFB1A7B0F6058A167C1D47D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.justinmarsh.coderainapplesilicon;
+				PRODUCT_MODULE_NAME = CodeRainAppleSilicon;
+				PRODUCT_NAME = CodeRainAppleSilicon;
+			};
+			name = Release;
 		};
 		3080B53858ADE4F8260D76E6 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -354,6 +411,18 @@
 				PRODUCT_MODULE_NAME = CodeRainSaver;
 			};
 			name = Release;
+		};
+		4400D9BCC552A1C955404443 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = arm64;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				ONLY_ACTIVE_ARCH = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = com.justinmarsh.coderainapplesilicon;
+				PRODUCT_MODULE_NAME = CodeRainAppleSilicon;
+				PRODUCT_NAME = CodeRainAppleSilicon;
+			};
+			name = Debug;
 		};
 		4B5F17FA82B70A5CE012A6E5 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -408,7 +477,7 @@
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = YES;
-				CURRENT_PROJECT_VERSION = 11;
+				CURRENT_PROJECT_VERSION = 13;
 				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = "";
@@ -422,7 +491,7 @@
 				LM_FILTER_WARNINGS = YES;
 				MACH_O_TYPE = mh_bundle;
 				MACOSX_DEPLOYMENT_TARGET = 15.0;
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.1.3;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = com.justinmarsh.coderainsaver;
 				PRODUCT_NAME = CodeRainSaver;
@@ -498,6 +567,15 @@
 			buildConfigurations = (
 				1B4CB3A6B369599B8EF1FA95 /* Debug */,
 				EC43CFBE714E5D14FC2DF5A2 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		C792BF24E92F034215729B3D /* Build configuration list for PBXNativeTarget "CodeRainAppleSilicon" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				4400D9BCC552A1C955404443 /* Debug */,
+				1BFB1A7B0F6058A167C1D47D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

@@ -169,6 +169,7 @@ class CodeRainSaverView: ScreenSaverView {
         var leadSpan: Int
         var mutationTimer: TimeInterval
         var mutationInterval: TimeInterval
+        var renderRevision: Int
     }
 
     private enum GlyphStyle: CaseIterable {
@@ -225,24 +226,15 @@ class CodeRainSaverView: ScreenSaverView {
         let size: NSSize
     }
 
-    private final class GlyphSlotLayers {
-        let mainLayer: CALayer
-        let glowLayer: CALayer
-        var mainKey: GlyphSpriteKey?
-        var glowKey: GlyphSpriteKey?
+    private final class ColumnStripLayer {
+        let layer: CALayer
+        var renderedRevision = -1
+        var renderedDepth = 0
+        var renderedGlyphStep: CGFloat = 0
+        var drawOffset = NSPoint.zero
 
         init(contentsScale: CGFloat) {
-            self.mainLayer = GlyphSlotLayers.makeLayer(contentsScale: contentsScale)
-            self.glowLayer = GlyphSlotLayers.makeLayer(contentsScale: contentsScale)
-        }
-
-        func updateContentsScale(_ contentsScale: CGFloat) {
-            mainLayer.contentsScale = contentsScale
-            glowLayer.contentsScale = contentsScale
-        }
-
-        private static func makeLayer(contentsScale: CGFloat) -> CALayer {
-            let layer = CALayer()
+            layer = CALayer()
             layer.anchorPoint = .zero
             layer.contentsScale = contentsScale
             layer.contentsGravity = .resize
@@ -259,7 +251,10 @@ class CodeRainSaverView: ScreenSaverView {
                 "hidden": NSNull(),
                 "frame": NSNull()
             ]
-            return layer
+        }
+
+        func invalidate() {
+            renderedRevision = -1
         }
     }
 
@@ -291,7 +286,7 @@ class CodeRainSaverView: ScreenSaverView {
     private var backgroundImage: CGImage?
     private let backgroundLayer = CALayer()
     private let rainLayer = CALayer()
-    private var columnLayerSlots: [[GlyphSlotLayers]] = []
+    private var columnStripLayers: [ColumnStripLayer] = []
 
     private var configureSheetWindow: NSWindow?
     private var sliderByKey: [PreferenceKey: NSSlider] = [:]
@@ -573,7 +568,8 @@ class CodeRainSaverView: ScreenSaverView {
             brightness: randomFloat(in: 0.88...1.08),
             leadSpan: Int.random(in: 3...5),
             mutationTimer: mutationInterval,
-            mutationInterval: mutationInterval
+            mutationInterval: mutationInterval,
+            renderRevision: 0
         )
     }
 
@@ -589,6 +585,7 @@ class CodeRainSaverView: ScreenSaverView {
         column.leadSpan = Int.random(in: 3...5)
         column.mutationInterval = Double.random(in: 0.15...0.34) * preferences.persistence
         column.mutationTimer = column.mutationInterval
+        column.renderRevision &+= 1
         columns[index] = column
     }
 
@@ -601,6 +598,7 @@ class CodeRainSaverView: ScreenSaverView {
             let glyphIndex = Int.random(in: 0..<activeRange)
             columns[index].glyphs[glyphIndex] = randomGlyph()
         }
+        columns[index].renderRevision &+= 1
     }
 
     private func makeBackgroundImage() -> CGImage? {
@@ -675,82 +673,36 @@ class CodeRainSaverView: ScreenSaverView {
     }
 
     private func updateRainLayers() {
-        guard columnLayerSlots.count == columns.count else { return }
+        guard columnStripLayers.count == columns.count else { return }
 
         CATransaction.begin()
         CATransaction.setDisableActions(true)
 
         for (columnIndex, column) in columns.enumerated() {
-            let slots = columnLayerSlots[columnIndex]
-            let columnBrightness = column.brightness
-            let glow = CGFloat(preferences.glow) * column.glowBoost * columnBrightness
-            let activeDepth = min(visibleGlyphDepth, min(column.length, slots.count))
+            let strip = columnStripLayers[columnIndex]
+            let activeDepth = min(visibleGlyphDepth, column.length)
 
-            for offset in slots.indices {
-                let slot = slots[offset]
-
-                guard offset < activeDepth else {
-                    hide(slot)
-                    continue
-                }
-
-                let y = column.headY - (CGFloat(offset) * glyphStep)
-                if y < -glyphStep || y > bounds.height + glyphStep {
-                    hide(slot)
-                    continue
-                }
-
-                let normalized = CGFloat(offset) / CGFloat(max(activeDepth - 1, 1))
-                let baseAlpha = max(0.16, CGFloat(pow(Double(1.0 - normalized), 0.95)))
-                let glyph = column.glyphs[offset]
-                let point = NSPoint(x: column.x.rounded(.toNearestOrAwayFromZero), y: y.rounded(.toNearestOrAwayFromZero))
-
-                if offset == 0 {
-                    apply(
-                        spriteKey: GlyphSpriteKey(glyph: glyph, style: .head),
-                        alpha: 0.96,
-                        at: point,
-                        to: slot.mainLayer,
-                        cachedKey: &slot.mainKey
-                    )
-                    apply(
-                        spriteKey: GlyphSpriteKey(glyph: glyph, style: .headGlow),
-                        alpha: 0.085 * glow,
-                        at: NSPoint(x: point.x, y: point.y - 1),
-                        to: slot.glowLayer,
-                        cachedKey: &slot.glowKey
-                    )
-                } else if offset < column.leadSpan {
-                    apply(
-                        spriteKey: GlyphSpriteKey(glyph: glyph, style: .bright),
-                        alpha: 0.88 * baseAlpha * columnBrightness,
-                        at: point,
-                        to: slot.mainLayer,
-                        cachedKey: &slot.mainKey
-                    )
-
-                    if offset < 3 {
-                        apply(
-                            spriteKey: GlyphSpriteKey(glyph: glyph, style: .brightGlow),
-                            alpha: 0.03 * glow * baseAlpha,
-                            at: point,
-                            to: slot.glowLayer,
-                            cachedKey: &slot.glowKey
-                        )
-                    } else {
-                        hideGlow(on: slot)
-                    }
-                } else {
-                    apply(
-                        spriteKey: GlyphSpriteKey(glyph: glyph, style: .trail),
-                        alpha: 0.86 * baseAlpha * columnBrightness,
-                        at: point,
-                        to: slot.mainLayer,
-                        cachedKey: &slot.mainKey
-                    )
-                    hideGlow(on: slot)
-                }
+            if strip.renderedRevision != column.renderRevision ||
+                strip.renderedDepth != activeDepth ||
+                strip.renderedGlyphStep != glyphStep {
+                renderColumnStrip(column, activeDepth: activeDepth, into: strip)
             }
+
+            let visibleTop = column.headY
+            let visibleBottom = column.headY - (CGFloat(activeDepth - 1) * glyphStep)
+            guard visibleTop >= -glyphStep && visibleBottom <= bounds.height + glyphStep else {
+                strip.layer.isHidden = true
+                continue
+            }
+
+            let frame = CGRect(
+                x: column.x + strip.drawOffset.x,
+                y: visibleBottom + strip.drawOffset.y,
+                width: strip.layer.bounds.width,
+                height: strip.layer.bounds.height
+            )
+            strip.layer.frame = frame.integral
+            strip.layer.isHidden = false
         }
 
         CATransaction.commit()
@@ -765,13 +717,10 @@ class CodeRainSaverView: ScreenSaverView {
         CATransaction.setDisableActions(true)
 
         rainLayer.sublayers?.forEach { $0.removeFromSuperlayer() }
-        columnLayerSlots = columns.map { _ in
-            (0..<visibleGlyphDepth).map { _ in
-                let slot = GlyphSlotLayers(contentsScale: contentsScale)
-                rainLayer.addSublayer(slot.glowLayer)
-                rainLayer.addSublayer(slot.mainLayer)
-                return slot
-            }
+        columnStripLayers = columns.map { _ in
+            let strip = ColumnStripLayer(contentsScale: contentsScale)
+            rainLayer.addSublayer(strip.layer)
+            return strip
         }
 
         CATransaction.commit()
@@ -825,10 +774,8 @@ class CodeRainSaverView: ScreenSaverView {
         backgroundLayer.contents = backgroundImage
 
         rainLayer.frame = bounds
-        for slots in columnLayerSlots {
-            for slot in slots {
-                slot.updateContentsScale(contentsScale)
-            }
+        for strip in columnStripLayers {
+            strip.layer.contentsScale = contentsScale
         }
 
         CATransaction.commit()
@@ -877,35 +824,6 @@ class CodeRainSaverView: ScreenSaverView {
         }
     }
 
-    private func apply(
-        spriteKey: GlyphSpriteKey,
-        alpha: CGFloat,
-        at point: NSPoint,
-        to layer: CALayer,
-        cachedKey: inout GlyphSpriteKey?
-    ) {
-        guard alpha > 0.001 else {
-            layer.isHidden = true
-            return
-        }
-
-        let sprite = glyphSprite(for: spriteKey.glyph, style: spriteKey.style)
-        if cachedKey != spriteKey {
-            layer.contents = sprite.cgImage
-            cachedKey = spriteKey
-        }
-
-        let frame = CGRect(
-            x: point.x + sprite.drawOffset.x,
-            y: point.y + sprite.drawOffset.y,
-            width: sprite.size.width,
-            height: sprite.size.height
-        )
-        layer.frame = frame.integral
-        layer.opacity = Float(alpha)
-        layer.isHidden = false
-    }
-
     private func draw(
         spriteKey: GlyphSpriteKey,
         alpha: CGFloat,
@@ -934,6 +852,103 @@ class CodeRainSaverView: ScreenSaverView {
         context.restoreGState()
     }
 
+    private func renderColumnStrip(_ column: Column, activeDepth: Int, into strip: ColumnStripLayer) {
+        guard activeDepth > 0 else {
+            strip.layer.contents = nil
+            strip.layer.isHidden = true
+            strip.invalidate()
+            return
+        }
+
+        let sprites = (0..<activeDepth).map { offset -> (sprite: GlyphSprite, alpha: CGFloat, y: CGFloat) in
+            let normalized = CGFloat(offset) / CGFloat(max(activeDepth - 1, 1))
+            let baseAlpha = max(0.16, CGFloat(pow(Double(1.0 - normalized), 0.95)))
+            let columnBrightness = column.brightness
+            let glow = CGFloat(preferences.glow) * column.glowBoost * columnBrightness
+            let glyph = column.glyphs[offset]
+            let style: GlyphStyle
+            let alpha: CGFloat
+
+            if offset == 0 {
+                style = .head
+                alpha = 0.96
+            } else if offset < column.leadSpan {
+                style = .bright
+                alpha = 0.88 * baseAlpha * columnBrightness
+            } else {
+                style = .trail
+                alpha = 0.86 * baseAlpha * columnBrightness
+            }
+
+            _ = glow
+            return (glyphSprite(for: glyph, style: style), alpha, CGFloat(activeDepth - 1 - offset) * glyphStep)
+        }
+
+        let glowSprites = (0..<min(activeDepth, 3)).map { offset -> (sprite: GlyphSprite, alpha: CGFloat, y: CGFloat) in
+            let normalized = CGFloat(offset) / CGFloat(max(activeDepth - 1, 1))
+            let baseAlpha = max(0.16, CGFloat(pow(Double(1.0 - normalized), 0.95)))
+            let columnBrightness = column.brightness
+            let glow = CGFloat(preferences.glow) * column.glowBoost * columnBrightness
+            let glyph = column.glyphs[offset]
+            let style: GlyphStyle = offset == 0 ? .headGlow : .brightGlow
+            let alpha: CGFloat = offset == 0 ? 0.085 * glow : 0.03 * glow * baseAlpha
+            return (glyphSprite(for: glyph, style: style), alpha, CGFloat(activeDepth - 1 - offset) * glyphStep - (offset == 0 ? 1 : 0))
+        }
+
+        let allSprites = sprites + glowSprites
+        let minX = allSprites.map { $0.sprite.drawOffset.x }.min() ?? 0
+        let maxX = allSprites.map { $0.sprite.drawOffset.x + $0.sprite.size.width }.max() ?? glyphFont.pointSize
+        let minY = allSprites.map { $0.y + $0.sprite.drawOffset.y }.min() ?? 0
+        let maxY = allSprites.map { $0.y + $0.sprite.drawOffset.y + $0.sprite.size.height }.max() ?? glyphStep
+        let imageSize = NSSize(width: ceil(maxX - minX), height: ceil(maxY - minY))
+        let image = NSImage(size: imageSize)
+
+        image.lockFocus()
+        NSGraphicsContext.current?.imageInterpolation = .none
+        guard let context = NSGraphicsContext.current?.cgContext else {
+            image.unlockFocus()
+            return
+        }
+
+        for item in glowSprites {
+            context.saveGState()
+            context.setAlpha(item.alpha)
+            context.draw(
+                item.sprite.cgImage,
+                in: CGRect(
+                    x: item.sprite.drawOffset.x - minX,
+                    y: item.y + item.sprite.drawOffset.y - minY,
+                    width: item.sprite.size.width,
+                    height: item.sprite.size.height
+                ).integral
+            )
+            context.restoreGState()
+        }
+
+        for item in sprites {
+            context.saveGState()
+            context.setAlpha(item.alpha)
+            context.draw(
+                item.sprite.cgImage,
+                in: CGRect(
+                    x: item.sprite.drawOffset.x - minX,
+                    y: item.y + item.sprite.drawOffset.y - minY,
+                    width: item.sprite.size.width,
+                    height: item.sprite.size.height
+                ).integral
+            )
+            context.restoreGState()
+        }
+        image.unlockFocus()
+
+        strip.layer.contents = image.cgImage(forProposedRect: nil, context: nil, hints: nil)
+        strip.layer.bounds = CGRect(origin: .zero, size: imageSize)
+        strip.drawOffset = NSPoint(x: minX, y: minY)
+        strip.renderedRevision = column.renderRevision
+        strip.renderedDepth = activeDepth
+        strip.renderedGlyphStep = glyphStep
+    }
+
     private var shouldShowInlineControls: Bool {
         if isPreview {
             return true
@@ -949,15 +964,6 @@ class CodeRainSaverView: ScreenSaverView {
 
     private func updatePreviewControlsButtonVisibility() {
         previewControlsButton.isHidden = !shouldShowInlineControls
-    }
-
-    private func hide(_ slot: GlyphSlotLayers) {
-        slot.mainLayer.isHidden = true
-        slot.glowLayer.isHidden = true
-    }
-
-    private func hideGlow(on slot: GlyphSlotLayers) {
-        slot.glowLayer.isHidden = true
     }
 
     private func glyphSprite(for glyph: String, style: GlyphStyle) -> GlyphSprite {

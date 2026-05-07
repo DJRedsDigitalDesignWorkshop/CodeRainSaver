@@ -9,8 +9,8 @@ options:
 settings:
   base:
     SWIFT_VERSION: "6.0"
-    MARKETING_VERSION: "1.1.1"
-    CURRENT_PROJECT_VERSION: "11"
+    MARKETING_VERSION: "1.1.3"
+    CURRENT_PROJECT_VERSION: "13"
     DEVELOPMENT_TEAM: ""
     CODE_SIGN_STYLE: Automatic
     INFOPLIST_FILE: Info.plist
@@ -47,6 +47,10 @@ schemes:
     build:
       targets:
         CodeRainCatalina: all
+  CodeRainAppleSilicon:
+    build:
+      targets:
+        CodeRainAppleSilicon: all
   CodeRainIntel:
     build:
       targets:
@@ -68,6 +72,22 @@ targets:
     settings:
       base:
         PRODUCT_MODULE_NAME: CodeRainSaver
+  CodeRainAppleSilicon:
+    type: bundle
+    platform: macOS
+    sources:
+      - path: Sources
+    dependencies:
+      - sdk: ScreenSaver.framework
+      - sdk: AppKit.framework
+    settings:
+      base:
+        PRODUCT_MODULE_NAME: CodeRainAppleSilicon
+        PRODUCT_BUNDLE_IDENTIFIER: com.justinmarsh.coderainapplesilicon
+        PRODUCT_NAME: CodeRainAppleSilicon
+        MACOSX_DEPLOYMENT_TARGET: "15.0"
+        ARCHS: arm64
+        ONLY_ACTIVE_ARCH: NO
   CodeRainIntel:
     type: bundle
     platform: macOS

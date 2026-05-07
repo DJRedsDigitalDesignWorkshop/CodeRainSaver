@@ -5,7 +5,7 @@ set -euo pipefail
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 PROJECT_PATH="$ROOT_DIR/CodeRainSaver.xcodeproj"
 BUILD_ROOT="$ROOT_DIR/build"
-RELEASE_ROOT="$BUILD_ROOT/Build/Products/Release"
+RELEASE_ROOT="$BUILD_ROOT/Release"
 STAGING_ROOT="$BUILD_ROOT/release-staging"
 DIST_ROOT="$ROOT_DIR/dist"
 DERIVED_DATA_ROOT="$BUILD_ROOT/DerivedData"
@@ -15,7 +15,7 @@ NOTARYTOOL_PROFILE="${NOTARYTOOL_PROFILE:-}"
 ALLOW_UNSIGNED_PACKAGES="${ALLOW_UNSIGNED_PACKAGES:-0}"
 
 if [[ "$VERSION" == *'$('* || -z "$VERSION" ]]; then
-  VERSION="1.1.1"
+  VERSION="1.1.3"
 fi
 
 XCODEGEN_BIN="${XCODEGEN_BIN:-}"
@@ -49,7 +49,7 @@ mkdir -p "$DERIVED_DATA_ROOT"
 
 xcodebuild \
   -project "$PROJECT_PATH" \
-  -scheme CodeRainSaver \
+  -scheme CodeRainAppleSilicon \
   -configuration Release \
   -destination 'generic/platform=macOS' \
   -derivedDataPath "$DERIVED_DATA_ROOT" \
@@ -100,11 +100,11 @@ notarize_pkg() {
   xcrun stapler staple "$package_path"
 }
 
-build_pkg "CodeRainSaver" "CodeRainSaver" "com.justinmarsh.coderainsaver.pkg" "CodeRainSaver-$VERSION-macOS15-plus.pkg"
+build_pkg "CodeRainAppleSilicon" "CodeRainAppleSilicon" "com.justinmarsh.coderainapplesilicon.pkg" "CodeRainAppleSilicon-$VERSION-Apple-Silicon.pkg"
 build_pkg "CodeRainIntel" "CodeRainIntel" "com.justinmarsh.coderainintel.pkg" "CodeRainIntel-$VERSION-Ventura-Intel.pkg"
 
 if [[ -n "$PKG_SIGNING_IDENTITY" && -n "$NOTARYTOOL_PROFILE" ]]; then
-  notarize_pkg "$DIST_ROOT/CodeRainSaver-$VERSION-macOS15-plus.pkg"
+  notarize_pkg "$DIST_ROOT/CodeRainAppleSilicon-$VERSION-Apple-Silicon.pkg"
   notarize_pkg "$DIST_ROOT/CodeRainIntel-$VERSION-Ventura-Intel.pkg"
 elif [[ -n "$PKG_SIGNING_IDENTITY" ]]; then
   echo "note: packages were signed but not notarized; set NOTARYTOOL_PROFILE to notarize and staple them." >&2
