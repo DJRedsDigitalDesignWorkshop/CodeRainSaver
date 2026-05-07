@@ -397,7 +397,7 @@ class CodeRainSaverView: ScreenSaverView {
     }
 
     override func animateOneFrame() {
-        guard shouldRenderFrame else {
+        guard hasVisibleRenderHost else {
             animationTimeInterval = 1.0
             lastFrameTimestamp = CACurrentMediaTime()
             wasRenderVisible = false
@@ -408,7 +408,7 @@ class CodeRainSaverView: ScreenSaverView {
             lastFrameTimestamp = CACurrentMediaTime()
             wasRenderVisible = true
         }
-        animationTimeInterval = 1.0 / 60.0
+        animationTimeInterval = targetFrameInterval
 
         guard !columns.isEmpty else {
             if !didSetup {
@@ -1048,7 +1048,7 @@ class CodeRainSaverView: ScreenSaverView {
         return max(16, min(64, depth))
     }
 
-    private var shouldRenderFrame: Bool {
+    private var hasVisibleRenderHost: Bool {
         guard let window else {
             return false
         }
@@ -1061,7 +1061,17 @@ class CodeRainSaverView: ScreenSaverView {
             return false
         }
 
-        return NSApplication.shared.isActive || isUserSessionLocked
+        return true
+    }
+
+    private var targetFrameInterval: TimeInterval {
+        if isPreview || shouldShowInlineControls || NSApplication.shared.isActive || isUserSessionLocked {
+            return 1.0 / 60.0
+        }
+
+        // Tahoe can keep the selected saver alive in a Wallpaper-hosted legacyScreenSaver
+        // process. Keep it animated if visible, but avoid a full-speed background render loop.
+        return 1.0 / 20.0
     }
 
     private var isUserSessionLocked: Bool {

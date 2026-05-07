@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 ## Unreleased
 - No unreleased changes recorded yet.
 
+## 1.1.9 - 2026-05-07
+- Kept visible screen saver hosts animated even when macOS does not report the host app as active.
+- Changed inactive visible hosts from a hard pause to a reduced-rate render loop.
+
 ## 1.1.8 - 2026-05-07
 - Stopped the background Wallpaper-flavored legacyScreenSaver host from rendering continuously.
 - Preserved full rendering for preview/options, the active foreground saver host, and locked-session playback.
