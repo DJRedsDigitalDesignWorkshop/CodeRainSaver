@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 ## Unreleased
 - No unreleased changes recorded yet.
 
+## 1.1.5 - 2026-05-07
+- Drew glyphs into fixed-size cells so character changes cannot resize a column.
+- Kept optimized column strip dimensions deterministic for each font size and visible depth.
+
 ## 1.1.4 - 2026-05-07
 - Fixed visual column wobble by centering glyph sprites inside fixed-width column strips.
 - Pixel-aligned animated strip origins without re-integralizing layer sizes every frame.

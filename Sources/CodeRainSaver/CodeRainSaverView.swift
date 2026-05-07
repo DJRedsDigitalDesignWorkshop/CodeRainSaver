@@ -278,6 +278,7 @@ class CodeRainSaverView: ScreenSaverView {
     private var glyphFont = NSFont.monospacedSystemFont(ofSize: 26, weight: .regular)
     private var headGlyphFont = NSFont.monospacedSystemFont(ofSize: 29, weight: .medium)
     private var glyphStep: CGFloat = 30
+    private var glyphCellSize = NSSize(width: 42, height: 34)
     private var columnStride: CGFloat = 18
     private var didSetup = false
     private var lastFrameTimestamp: CFTimeInterval = 0
@@ -519,6 +520,7 @@ class CodeRainSaverView: ScreenSaverView {
         glyphFont = NSFont(name: "HiraginoSans-W5", size: fontSize) ?? NSFont(name: "HiraginoSans-W6", size: fontSize) ?? NSFont.monospacedSystemFont(ofSize: fontSize, weight: .bold)
         headGlyphFont = NSFont(name: "HiraginoSans-W7", size: fontSize * 1.02) ?? NSFont(name: "HiraginoSans-W8", size: fontSize * 1.02) ?? NSFont.monospacedSystemFont(ofSize: fontSize * 1.02, weight: .heavy)
         glyphStep = fontSize * 0.96
+        glyphCellSize = NSSize(width: ceil(fontSize * 2.05), height: ceil(fontSize * 1.48))
         columnStride = max(7, fontSize * 0.58)
         glyphSpriteCache.removeAll(keepingCapacity: true)
         backgroundImage = makeBackgroundImage()
@@ -895,12 +897,10 @@ class CodeRainSaverView: ScreenSaverView {
             return (glyphSprite(for: glyph, style: style), alpha, CGFloat(activeDepth - 1 - offset) * glyphStep - (offset == 0 ? 1 : 0))
         }
 
-        let allSprites = sprites + glowSprites
-        let minY = allSprites.map { $0.y + $0.sprite.drawOffset.y }.min() ?? 0
-        let maxY = allSprites.map { $0.y + $0.sprite.drawOffset.y + $0.sprite.size.height }.max() ?? glyphStep
-        let widestSprite = allSprites.map { $0.sprite.size.width }.max() ?? glyphFont.pointSize
-        let stripWidth = ceil(max(widestSprite, glyphFont.pointSize * 1.65))
-        let imageSize = NSSize(width: stripWidth, height: ceil(maxY - minY))
+        let imageSize = NSSize(
+            width: glyphCellSize.width,
+            height: ceil((CGFloat(activeDepth - 1) * glyphStep) + glyphCellSize.height)
+        )
         let image = NSImage(size: imageSize)
 
         image.lockFocus()
@@ -916,8 +916,8 @@ class CodeRainSaverView: ScreenSaverView {
             context.draw(
                 item.sprite.cgImage,
                 in: CGRect(
-                    x: (imageSize.width - item.sprite.size.width) / 2,
-                    y: item.y + item.sprite.drawOffset.y - minY,
+                    x: 0,
+                    y: item.y,
                     width: item.sprite.size.width,
                     height: item.sprite.size.height
                 ).integral
@@ -931,8 +931,8 @@ class CodeRainSaverView: ScreenSaverView {
             context.draw(
                 item.sprite.cgImage,
                 in: CGRect(
-                    x: (imageSize.width - item.sprite.size.width) / 2,
-                    y: item.y + item.sprite.drawOffset.y - minY,
+                    x: 0,
+                    y: item.y,
                     width: item.sprite.size.width,
                     height: item.sprite.size.height
                 ).integral
@@ -943,7 +943,7 @@ class CodeRainSaverView: ScreenSaverView {
 
         strip.layer.contents = image.cgImage(forProposedRect: nil, context: nil, hints: nil)
         strip.layer.bounds = CGRect(origin: .zero, size: imageSize)
-        strip.drawOffset = NSPoint(x: -imageSize.width / 2, y: minY)
+        strip.drawOffset = NSPoint(x: -imageSize.width / 2, y: 0)
         strip.renderedRevision = column.renderRevision
         strip.renderedDepth = activeDepth
         strip.renderedGlyphStep = glyphStep
@@ -980,41 +980,42 @@ class CodeRainSaverView: ScreenSaverView {
     private func makeGlyphSprite(for glyph: String, style: GlyphStyle) -> GlyphSprite {
         let font = style.usesHeadFont ? headGlyphFont : glyphFont
         let padding = style.padding(for: font.pointSize)
+        let size = glyphCellSize
         let attributes: [NSAttributedString.Key: Any] = [
             .font: font,
             .foregroundColor: style.color()
         ]
         let attributedGlyph = NSAttributedString(string: glyph, attributes: attributes)
         let textSize = attributedGlyph.size()
-        let size = NSSize(
-            width: ceil(textSize.width + padding.width * 2),
-            height: ceil(textSize.height + padding.height * 2)
+        let drawPoint = NSPoint(
+            x: ((size.width - textSize.width) / 2) + padding.width * 0.12,
+            y: ((size.height - textSize.height) / 2) + padding.height * 0.12
         )
 
         let image = NSImage(size: size)
         image.lockFocus()
         NSGraphicsContext.current?.imageInterpolation = .none
-        attributedGlyph.draw(at: NSPoint(x: padding.width, y: padding.height))
+        attributedGlyph.draw(at: drawPoint)
         image.unlockFocus()
         image.isTemplate = false
 
         guard let cgImage = image.cgImage(forProposedRect: nil, context: nil, hints: nil) else {
             let fallback = NSImage(size: size)
             fallback.lockFocus()
-            attributedGlyph.draw(at: NSPoint(x: padding.width, y: padding.height))
+            attributedGlyph.draw(at: drawPoint)
             fallback.unlockFocus()
             let fallbackImage = fallback.cgImage(forProposedRect: nil, context: nil, hints: nil)!
 
             return GlyphSprite(
                 cgImage: fallbackImage,
-                drawOffset: NSPoint(x: -padding.width, y: -padding.height),
+                drawOffset: NSPoint(x: -size.width / 2, y: -size.height / 2),
                 size: size
             )
         }
 
         return GlyphSprite(
             cgImage: cgImage,
-            drawOffset: NSPoint(x: -padding.width, y: -padding.height),
+            drawOffset: NSPoint(x: -size.width / 2, y: -size.height / 2),
             size: size
         )
     }
