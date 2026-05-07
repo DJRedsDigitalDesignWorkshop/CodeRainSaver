@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 ## Unreleased
 - No unreleased changes recorded yet.
 
+## 1.1.10 - 2026-05-07
+- Stopped inactive desktop-level Wallpaper hosts from rendering the full rain loop.
+- Kept real screen-saver-level windows animated, avoiding the one-frame freeze from the earlier active-app gate.
+- Cached session lock-state checks instead of querying CoreGraphics every frame.
+
 ## 1.1.9 - 2026-05-07
 - Kept visible screen saver hosts animated even when macOS does not report the host app as active.
 - Changed inactive visible hosts from a hard pause to a reduced-rate render loop.

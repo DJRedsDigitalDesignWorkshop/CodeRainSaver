@@ -284,6 +284,8 @@ class CodeRainSaverView: ScreenSaverView {
     private var lastFrameTimestamp: CFTimeInterval = 0
     private var wasRenderVisible = false
     private var preferencesReloadAccumulator: TimeInterval = 0
+    private var cachedSessionIsLocked = false
+    private var lastSessionLockCheck: CFTimeInterval = 0
     private var glyphSpriteCache: [GlyphSpriteKey: GlyphSprite] = [:]
     private var backgroundImage: CGImage?
     private let backgroundLayer = CALayer()
@@ -397,18 +399,28 @@ class CodeRainSaverView: ScreenSaverView {
     }
 
     override func animateOneFrame() {
+        let now = CACurrentMediaTime()
+
         guard hasVisibleRenderHost else {
             animationTimeInterval = 1.0
-            lastFrameTimestamp = CACurrentMediaTime()
+            lastFrameTimestamp = now
+            wasRenderVisible = false
+            return
+        }
+
+        let sessionIsLocked = cachedUserSessionLocked(now: now)
+        guard shouldAnimateVisibleHost(sessionIsLocked: sessionIsLocked) else {
+            animationTimeInterval = 2.0
+            lastFrameTimestamp = now
             wasRenderVisible = false
             return
         }
 
         if !wasRenderVisible {
-            lastFrameTimestamp = CACurrentMediaTime()
+            lastFrameTimestamp = now
             wasRenderVisible = true
         }
-        animationTimeInterval = targetFrameInterval
+        animationTimeInterval = targetFrameInterval(sessionIsLocked: sessionIsLocked)
 
         guard !columns.isEmpty else {
             if !didSetup {
@@ -418,7 +430,6 @@ class CodeRainSaverView: ScreenSaverView {
         }
 
         autoreleasepool {
-            let now = CACurrentMediaTime()
             let unclampedDelta = lastFrameTimestamp > 0 ? now - lastFrameTimestamp : animationTimeInterval
             lastFrameTimestamp = now
 
@@ -1064,17 +1075,41 @@ class CodeRainSaverView: ScreenSaverView {
         return true
     }
 
-    private var targetFrameInterval: TimeInterval {
-        if isPreview || shouldShowInlineControls || NSApplication.shared.isActive || isUserSessionLocked {
+    private func shouldAnimateVisibleHost(sessionIsLocked: Bool) -> Bool {
+        if isPreview || shouldShowInlineControls || NSApplication.shared.isActive || sessionIsLocked {
+            return true
+        }
+
+        return !isLikelyWallpaperHost
+    }
+
+    private func targetFrameInterval(sessionIsLocked: Bool) -> TimeInterval {
+        if isPreview || shouldShowInlineControls || NSApplication.shared.isActive || sessionIsLocked {
             return 1.0 / 60.0
         }
 
-        // Tahoe can keep the selected saver alive in a Wallpaper-hosted legacyScreenSaver
-        // process. Keep it animated if visible, but avoid a full-speed background render loop.
-        return 1.0 / 20.0
+        return isLikelyWallpaperHost ? 2.0 : (1.0 / 60.0)
     }
 
-    private var isUserSessionLocked: Bool {
+    private var isLikelyWallpaperHost: Bool {
+        guard let window else {
+            return false
+        }
+
+        return window.level.rawValue < Int(CGWindowLevelForKey(.screenSaverWindow))
+    }
+
+    private func cachedUserSessionLocked(now: CFTimeInterval) -> Bool {
+        guard now - lastSessionLockCheck >= 1.0 else {
+            return cachedSessionIsLocked
+        }
+
+        lastSessionLockCheck = now
+        cachedSessionIsLocked = readUserSessionLocked()
+        return cachedSessionIsLocked
+    }
+
+    private func readUserSessionLocked() -> Bool {
         guard
             let session = CGSessionCopyCurrentDictionary() as? [String: Any],
             let isLocked = session["CGSSessionScreenIsLocked"] as? Bool
