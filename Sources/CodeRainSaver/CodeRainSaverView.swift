@@ -1057,7 +1057,22 @@ class CodeRainSaverView: ScreenSaverView {
             return true
         }
 
-        return window.isVisible && window.alphaValue > 0.01
+        guard window.isVisible && window.alphaValue > 0.01 else {
+            return false
+        }
+
+        return NSApplication.shared.isActive || isUserSessionLocked
+    }
+
+    private var isUserSessionLocked: Bool {
+        guard
+            let session = CGSessionCopyCurrentDictionary() as? [String: Any],
+            let isLocked = session["CGSSessionScreenIsLocked"] as? Bool
+        else {
+            return false
+        }
+
+        return isLocked
     }
 
     private func pixelAligned(_ value: CGFloat) -> CGFloat {

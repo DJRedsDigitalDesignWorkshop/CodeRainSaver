@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 ## Unreleased
 - No unreleased changes recorded yet.
 
+## 1.1.8 - 2026-05-07
+- Stopped the background Wallpaper-flavored legacyScreenSaver host from rendering continuously.
+- Preserved full rendering for preview/options, the active foreground saver host, and locked-session playback.
+
 ## 1.1.7 - 2026-05-07
 - Restored animation in full-screen screen saver hosts by avoiding unreliable occlusion-state checks.
 - Kept hidden/preloaded host throttling based on a visible attached window.
