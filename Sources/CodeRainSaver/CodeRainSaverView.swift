@@ -282,6 +282,7 @@ class CodeRainSaverView: ScreenSaverView {
     private var columnStride: CGFloat = 18
     private var didSetup = false
     private var lastFrameTimestamp: CFTimeInterval = 0
+    private var wasRenderVisible = false
     private var preferencesReloadAccumulator: TimeInterval = 0
     private var glyphSpriteCache: [GlyphSpriteKey: GlyphSprite] = [:]
     private var backgroundImage: CGImage?
@@ -340,7 +341,7 @@ class CodeRainSaverView: ScreenSaverView {
     }
 
     private func sharedInit() {
-        animationTimeInterval = 1.0 / 60.0
+        animationTimeInterval = 1.0 / 12.0
         loadPreferences()
         DistributedNotificationCenter.default().addObserver(
             self,
@@ -396,6 +397,19 @@ class CodeRainSaverView: ScreenSaverView {
     }
 
     override func animateOneFrame() {
+        guard shouldRenderFrame else {
+            animationTimeInterval = 1.0
+            lastFrameTimestamp = CACurrentMediaTime()
+            wasRenderVisible = false
+            return
+        }
+
+        if !wasRenderVisible {
+            lastFrameTimestamp = CACurrentMediaTime()
+            wasRenderVisible = true
+        }
+        animationTimeInterval = 1.0 / 60.0
+
         guard !columns.isEmpty else {
             if !didSetup {
                 rebuildColumns()
@@ -1032,6 +1046,20 @@ class CodeRainSaverView: ScreenSaverView {
         let baseDepth = isPreview ? 19.0 : 28.0
         let depth = Int(round(baseDepth * preferences.persistence))
         return max(16, min(64, depth))
+    }
+
+    private var shouldRenderFrame: Bool {
+        guard let window else {
+            return false
+        }
+
+        if isPreview || shouldShowInlineControls {
+            return true
+        }
+
+        return window.isVisible &&
+            window.alphaValue > 0.01 &&
+            window.occlusionState.contains(.visible)
     }
 
     private func pixelAligned(_ value: CGFloat) -> CGFloat {

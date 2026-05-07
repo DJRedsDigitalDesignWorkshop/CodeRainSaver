@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 ## Unreleased
 - No unreleased changes recorded yet.
 
+## 1.1.6 - 2026-05-07
+- Paused high-frequency rendering when macOS preloads the selected idle screen saver in a hidden host.
+- Reduced the hidden host timer to a one-second heartbeat until the saver window is visible again.
+
 ## 1.1.5 - 2026-05-07
 - Drew glyphs into fixed-size cells so character changes cannot resize a column.
 - Kept optimized column strip dimensions deterministic for each font size and visible depth.
