@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 ## Unreleased
 - No unreleased changes recorded yet.
 
+## 1.1.4 - 2026-05-07
+- Fixed visual column wobble by centering glyph sprites inside fixed-width column strips.
+- Pixel-aligned animated strip origins without re-integralizing layer sizes every frame.
+
 ## 1.1.3 - 2026-05-06
 - Added a native Apple Silicon-only `CodeRainAppleSilicon` screen saver target.
 - Updated release packaging to produce separate Apple Silicon and Intel installers.

@@ -15,7 +15,7 @@ NOTARYTOOL_PROFILE="${NOTARYTOOL_PROFILE:-}"
 ALLOW_UNSIGNED_PACKAGES="${ALLOW_UNSIGNED_PACKAGES:-0}"
 
 if [[ "$VERSION" == *'$('* || -z "$VERSION" ]]; then
-  VERSION="1.1.3"
+  VERSION=""
 fi
 
 XCODEGEN_BIN="${XCODEGEN_BIN:-}"
@@ -66,6 +66,15 @@ xcodebuild \
   SYMROOT="$BUILD_ROOT" \
   OBJROOT="$BUILD_ROOT/Intermediates.noindex" \
   build
+
+if [[ -z "$VERSION" ]]; then
+  VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$RELEASE_ROOT/CodeRainAppleSilicon.saver/Contents/Info.plist" 2>/dev/null || true)"
+fi
+
+if [[ "$VERSION" == *'$('* || -z "$VERSION" ]]; then
+  echo "error: unable to determine concrete bundle version for release packages." >&2
+  exit 1
+fi
 
 build_pkg() {
   local product_name="$1"

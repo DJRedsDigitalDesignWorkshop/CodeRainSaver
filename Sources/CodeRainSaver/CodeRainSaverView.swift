@@ -696,12 +696,12 @@ class CodeRainSaverView: ScreenSaverView {
             }
 
             let frame = CGRect(
-                x: column.x + strip.drawOffset.x,
-                y: visibleBottom + strip.drawOffset.y,
+                x: pixelAligned(column.x + strip.drawOffset.x),
+                y: pixelAligned(visibleBottom + strip.drawOffset.y),
                 width: strip.layer.bounds.width,
                 height: strip.layer.bounds.height
             )
-            strip.layer.frame = frame.integral
+            strip.layer.frame = frame
             strip.layer.isHidden = false
         }
 
@@ -896,11 +896,11 @@ class CodeRainSaverView: ScreenSaverView {
         }
 
         let allSprites = sprites + glowSprites
-        let minX = allSprites.map { $0.sprite.drawOffset.x }.min() ?? 0
-        let maxX = allSprites.map { $0.sprite.drawOffset.x + $0.sprite.size.width }.max() ?? glyphFont.pointSize
         let minY = allSprites.map { $0.y + $0.sprite.drawOffset.y }.min() ?? 0
         let maxY = allSprites.map { $0.y + $0.sprite.drawOffset.y + $0.sprite.size.height }.max() ?? glyphStep
-        let imageSize = NSSize(width: ceil(maxX - minX), height: ceil(maxY - minY))
+        let widestSprite = allSprites.map { $0.sprite.size.width }.max() ?? glyphFont.pointSize
+        let stripWidth = ceil(max(widestSprite, glyphFont.pointSize * 1.65))
+        let imageSize = NSSize(width: stripWidth, height: ceil(maxY - minY))
         let image = NSImage(size: imageSize)
 
         image.lockFocus()
@@ -916,7 +916,7 @@ class CodeRainSaverView: ScreenSaverView {
             context.draw(
                 item.sprite.cgImage,
                 in: CGRect(
-                    x: item.sprite.drawOffset.x - minX,
+                    x: (imageSize.width - item.sprite.size.width) / 2,
                     y: item.y + item.sprite.drawOffset.y - minY,
                     width: item.sprite.size.width,
                     height: item.sprite.size.height
@@ -931,7 +931,7 @@ class CodeRainSaverView: ScreenSaverView {
             context.draw(
                 item.sprite.cgImage,
                 in: CGRect(
-                    x: item.sprite.drawOffset.x - minX,
+                    x: (imageSize.width - item.sprite.size.width) / 2,
                     y: item.y + item.sprite.drawOffset.y - minY,
                     width: item.sprite.size.width,
                     height: item.sprite.size.height
@@ -943,7 +943,7 @@ class CodeRainSaverView: ScreenSaverView {
 
         strip.layer.contents = image.cgImage(forProposedRect: nil, context: nil, hints: nil)
         strip.layer.bounds = CGRect(origin: .zero, size: imageSize)
-        strip.drawOffset = NSPoint(x: minX, y: minY)
+        strip.drawOffset = NSPoint(x: -imageSize.width / 2, y: minY)
         strip.renderedRevision = column.renderRevision
         strip.renderedDepth = activeDepth
         strip.renderedGlyphStep = glyphStep
@@ -1031,6 +1031,11 @@ class CodeRainSaverView: ScreenSaverView {
         let baseDepth = isPreview ? 19.0 : 28.0
         let depth = Int(round(baseDepth * preferences.persistence))
         return max(16, min(64, depth))
+    }
+
+    private func pixelAligned(_ value: CGFloat) -> CGFloat {
+        let scale = max(currentContentsScale(), 1)
+        return (value * scale).rounded(.toNearestOrAwayFromZero) / scale
     }
 
     private func sharedPreferencesURL() -> URL? {
