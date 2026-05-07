@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 ## Unreleased
 - No unreleased changes recorded yet.
 
+## 1.1.7 - 2026-05-07
+- Restored animation in full-screen screen saver hosts by avoiding unreliable occlusion-state checks.
+- Kept hidden/preloaded host throttling based on a visible attached window.
+
 ## 1.1.6 - 2026-05-07
 - Paused high-frequency rendering when macOS preloads the selected idle screen saver in a hidden host.
 - Reduced the hidden host timer to a one-second heartbeat until the saver window is visible again.

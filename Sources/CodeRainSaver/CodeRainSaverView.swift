@@ -1057,9 +1057,7 @@ class CodeRainSaverView: ScreenSaverView {
             return true
         }
 
-        return window.isVisible &&
-            window.alphaValue > 0.01 &&
-            window.occlusionState.contains(.visible)
+        return window.isVisible && window.alphaValue > 0.01
     }
 
     private func pixelAligned(_ value: CGFloat) -> CGFloat {
