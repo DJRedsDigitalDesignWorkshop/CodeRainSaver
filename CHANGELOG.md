@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 ## Unreleased
 - No unreleased changes recorded yet.
 
+## 1.1.11 - 2026-05-07
+- Removed the hard stop for inactive desktop-level hosts so real screen saver playback cannot freeze after one frame.
+- Kept inactive wallpaper-style hosts throttled instead of fully rendering at foreground speed.
+
 ## 1.1.10 - 2026-05-07
 - Stopped inactive desktop-level Wallpaper hosts from rendering the full rain loop.
 - Kept real screen-saver-level windows animated, avoiding the one-frame freeze from the earlier active-app gate.

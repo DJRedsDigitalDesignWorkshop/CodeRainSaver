@@ -409,13 +409,6 @@ class CodeRainSaverView: ScreenSaverView {
         }
 
         let sessionIsLocked = cachedUserSessionLocked(now: now)
-        guard shouldAnimateVisibleHost(sessionIsLocked: sessionIsLocked) else {
-            animationTimeInterval = 2.0
-            lastFrameTimestamp = now
-            wasRenderVisible = false
-            return
-        }
-
         if !wasRenderVisible {
             lastFrameTimestamp = now
             wasRenderVisible = true
@@ -1075,20 +1068,20 @@ class CodeRainSaverView: ScreenSaverView {
         return true
     }
 
-    private func shouldAnimateVisibleHost(sessionIsLocked: Bool) -> Bool {
-        if isPreview || shouldShowInlineControls || NSApplication.shared.isActive || sessionIsLocked {
-            return true
-        }
-
-        return !isLikelyWallpaperHost
-    }
-
     private func targetFrameInterval(sessionIsLocked: Bool) -> TimeInterval {
-        if isPreview || shouldShowInlineControls || NSApplication.shared.isActive || sessionIsLocked {
+        if isPreview || shouldShowInlineControls || isForegroundSaverHost(sessionIsLocked: sessionIsLocked) {
             return 1.0 / 60.0
         }
 
-        return isLikelyWallpaperHost ? 2.0 : (1.0 / 60.0)
+        return isLikelyWallpaperHost ? (1.0 / 8.0) : (1.0 / 30.0)
+    }
+
+    private func isForegroundSaverHost(sessionIsLocked: Bool) -> Bool {
+        guard let window else {
+            return NSApplication.shared.isActive || sessionIsLocked
+        }
+
+        return NSApplication.shared.isActive || sessionIsLocked || window.isKeyWindow || window.isMainWindow
     }
 
     private var isLikelyWallpaperHost: Bool {

@@ -16,8 +16,8 @@ Both are packaged as standalone `.pkg` installers in the release artifacts so th
 
 ## Included In Public Releases
 
-- `CodeRainAppleSilicon-1.1.10-Apple-Silicon.pkg`
-- `CodeRainIntel-1.1.10-Ventura-Intel.pkg`
+- `CodeRainAppleSilicon-1.1.11-Apple-Silicon.pkg`
+- `CodeRainIntel-1.1.11-Ventura-Intel.pkg`
 
 The experimental `CodeRainCatalina` target stays in the source tree, but it is not part of the public release set.
 
