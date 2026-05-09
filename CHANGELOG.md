@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 ## Unreleased
 - No unreleased changes recorded yet.
 
+## 1.1.13 - 2026-05-09
+- Added a per-frame column-strip render budget to prevent CPU spikes when many glyphs mutate at once.
+- Slowed glyph mutation churn so dense scenes do not constantly re-rasterize tall column images.
+- Capped the heaviest trail depth and full-screen column count to reduce Retina layer memory pressure.
+
+## 1.1.12 - 2026-05-07
+- Added CoreGraphics window-layer detection for desktop-backdrop Wallpaper hosts.
+- Suppressed expensive rain rendering only for non-foreground backdrop hosts instead of relying on misleading AppKit window levels.
+
 ## 1.1.11 - 2026-05-07
 - Removed the hard stop for inactive desktop-level hosts so real screen saver playback cannot freeze after one frame.
 - Kept inactive wallpaper-style hosts throttled instead of fully rendering at foreground speed.

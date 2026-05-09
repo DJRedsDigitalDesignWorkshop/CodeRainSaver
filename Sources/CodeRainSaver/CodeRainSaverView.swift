@@ -286,6 +286,8 @@ class CodeRainSaverView: ScreenSaverView {
     private var preferencesReloadAccumulator: TimeInterval = 0
     private var cachedSessionIsLocked = false
     private var lastSessionLockCheck: CFTimeInterval = 0
+    private var cachedIsWallpaperBackdropHost = false
+    private var lastHostRoleCheck: CFTimeInterval = 0
     private var glyphSpriteCache: [GlyphSpriteKey: GlyphSprite] = [:]
     private var backgroundImage: CGImage?
     private let backgroundLayer = CALayer()
@@ -409,11 +411,19 @@ class CodeRainSaverView: ScreenSaverView {
         }
 
         let sessionIsLocked = cachedUserSessionLocked(now: now)
+        let isForegroundHost = isForegroundSaverHost(sessionIsLocked: sessionIsLocked)
+        if shouldSuppressBackdropHost(now: now, isForegroundHost: isForegroundHost) {
+            animationTimeInterval = 1.0
+            lastFrameTimestamp = now
+            wasRenderVisible = false
+            return
+        }
+
         if !wasRenderVisible {
             lastFrameTimestamp = now
             wasRenderVisible = true
         }
-        animationTimeInterval = targetFrameInterval(sessionIsLocked: sessionIsLocked)
+        animationTimeInterval = targetFrameInterval(isForegroundHost: isForegroundHost)
 
         guard !columns.isEmpty else {
             if !didSetup {
@@ -453,7 +463,7 @@ class CodeRainSaverView: ScreenSaverView {
         if usesCatalinaRenderer {
             needsDisplay = true
         } else {
-            updateRainLayers()
+            updateRainLayers(renderBudget: columnRenderBudget(isForegroundHost: isForegroundHost))
         }
     }
 
@@ -547,7 +557,8 @@ class CodeRainSaverView: ScreenSaverView {
         let desiredColumnCount = max(12, Int(baseColumnCount * preferences.density))
         let minimumColumnSpacing = max(8.4, fontSize * 0.74)
         let maximumNonOverlappingCount = max(12, Int(bounds.width / minimumColumnSpacing))
-        let columnCount = min(desiredColumnCount, maximumNonOverlappingCount)
+        let performanceColumnCap = isPreview ? 80 : 132
+        let columnCount = min(desiredColumnCount, maximumNonOverlappingCount, performanceColumnCap)
         let spacing = max(minimumColumnSpacing, bounds.width / CGFloat(columnCount))
 
         for index in 0..<columnCount {
@@ -559,7 +570,7 @@ class CodeRainSaverView: ScreenSaverView {
             needsDisplay = true
         } else {
             rebuildRainLayers()
-            updateRainLayers()
+            updateRainLayers(renderBudget: 8)
         }
     }
 
@@ -573,7 +584,7 @@ class CodeRainSaverView: ScreenSaverView {
             ? randomFloat(in: minHeadY...maxHeadY)
             : randomFloat(in: minHeadY...0)
         let speed = randomFloat(in: isPreview ? 42...88 : 52...112)
-        let mutationInterval = Double.random(in: 0.15...0.34) * preferences.persistence
+        let mutationInterval = makeMutationInterval()
         let glyphs = (0..<length).map { _ in randomGlyph() }
 
         return Column(
@@ -603,7 +614,7 @@ class CodeRainSaverView: ScreenSaverView {
         column.glowBoost = randomFloat(in: 0.85...1.25)
         column.brightness = randomFloat(in: 0.88...1.08)
         column.leadSpan = Int.random(in: 3...5)
-        column.mutationInterval = Double.random(in: 0.15...0.34) * preferences.persistence
+        column.mutationInterval = makeMutationInterval()
         column.mutationTimer = column.mutationInterval
         column.renderRevision &+= 1
         columns[index] = column
@@ -619,6 +630,11 @@ class CodeRainSaverView: ScreenSaverView {
             columns[index].glyphs[glyphIndex] = randomGlyph()
         }
         columns[index].renderRevision &+= 1
+    }
+
+    private func makeMutationInterval() -> TimeInterval {
+        let persistenceScale = max(0.85, min(1.35, preferences.persistence / 3.18))
+        return Double.random(in: 1.35...2.75) * persistenceScale
     }
 
     private func makeBackgroundImage() -> CGImage? {
@@ -692,9 +708,10 @@ class CodeRainSaverView: ScreenSaverView {
         return image.cgImage(forProposedRect: nil, context: nil, hints: nil)
     }
 
-    private func updateRainLayers() {
+    private func updateRainLayers(renderBudget: Int = .max) {
         guard columnStripLayers.count == columns.count else { return }
 
+        var rendersRemaining = renderBudget
         CATransaction.begin()
         CATransaction.setDisableActions(true)
 
@@ -705,7 +722,13 @@ class CodeRainSaverView: ScreenSaverView {
             if strip.renderedRevision != column.renderRevision ||
                 strip.renderedDepth != activeDepth ||
                 strip.renderedGlyphStep != glyphStep {
-                renderColumnStrip(column, activeDepth: activeDepth, into: strip)
+                if rendersRemaining > 0 {
+                    renderColumnStrip(column, activeDepth: activeDepth, into: strip)
+                    rendersRemaining -= 1
+                } else if strip.layer.contents == nil {
+                    strip.layer.isHidden = true
+                    continue
+                }
             }
 
             let visibleTop = column.headY
@@ -919,47 +942,52 @@ class CodeRainSaverView: ScreenSaverView {
             width: glyphCellSize.width,
             height: ceil((CGFloat(activeDepth - 1) * glyphStep) + glyphCellSize.height)
         )
-        let image = NSImage(size: imageSize)
+        let renderedImage = autoreleasepool { () -> CGImage? in
+            let image = NSImage(size: imageSize)
+            image.lockFocus()
+            NSGraphicsContext.current?.imageInterpolation = .none
+            guard let context = NSGraphicsContext.current?.cgContext else {
+                image.unlockFocus()
+                return nil
+            }
 
-        image.lockFocus()
-        NSGraphicsContext.current?.imageInterpolation = .none
-        guard let context = NSGraphicsContext.current?.cgContext else {
+            for item in glowSprites {
+                context.saveGState()
+                context.setAlpha(item.alpha)
+                context.draw(
+                    item.sprite.cgImage,
+                    in: CGRect(
+                        x: 0,
+                        y: item.y,
+                        width: item.sprite.size.width,
+                        height: item.sprite.size.height
+                    ).integral
+                )
+                context.restoreGState()
+            }
+
+            for item in sprites {
+                context.saveGState()
+                context.setAlpha(item.alpha)
+                context.draw(
+                    item.sprite.cgImage,
+                    in: CGRect(
+                        x: 0,
+                        y: item.y,
+                        width: item.sprite.size.width,
+                        height: item.sprite.size.height
+                    ).integral
+                )
+                context.restoreGState()
+            }
             image.unlockFocus()
-            return
+
+            return image.cgImage(forProposedRect: nil, context: nil, hints: nil)
         }
 
-        for item in glowSprites {
-            context.saveGState()
-            context.setAlpha(item.alpha)
-            context.draw(
-                item.sprite.cgImage,
-                in: CGRect(
-                    x: 0,
-                    y: item.y,
-                    width: item.sprite.size.width,
-                    height: item.sprite.size.height
-                ).integral
-            )
-            context.restoreGState()
-        }
+        guard let renderedImage else { return }
 
-        for item in sprites {
-            context.saveGState()
-            context.setAlpha(item.alpha)
-            context.draw(
-                item.sprite.cgImage,
-                in: CGRect(
-                    x: 0,
-                    y: item.y,
-                    width: item.sprite.size.width,
-                    height: item.sprite.size.height
-                ).integral
-            )
-            context.restoreGState()
-        }
-        image.unlockFocus()
-
-        strip.layer.contents = image.cgImage(forProposedRect: nil, context: nil, hints: nil)
+        strip.layer.contents = renderedImage
         strip.layer.bounds = CGRect(origin: .zero, size: imageSize)
         strip.drawOffset = NSPoint(x: -imageSize.width / 2, y: 0)
         strip.renderedRevision = column.renderRevision
@@ -1046,10 +1074,18 @@ class CodeRainSaverView: ScreenSaverView {
         CGFloat.random(in: range)
     }
 
+    private func columnRenderBudget(isForegroundHost: Bool) -> Int {
+        if isPreview || shouldShowInlineControls {
+            return 10
+        }
+
+        return isForegroundHost ? 3 : 1
+    }
+
     private var visibleGlyphDepth: Int {
         let baseDepth = isPreview ? 19.0 : 28.0
         let depth = Int(round(baseDepth * preferences.persistence))
-        return max(16, min(64, depth))
+        return max(16, min(56, depth))
     }
 
     private var hasVisibleRenderHost: Bool {
@@ -1068,12 +1104,12 @@ class CodeRainSaverView: ScreenSaverView {
         return true
     }
 
-    private func targetFrameInterval(sessionIsLocked: Bool) -> TimeInterval {
-        if isPreview || shouldShowInlineControls || isForegroundSaverHost(sessionIsLocked: sessionIsLocked) {
+    private func targetFrameInterval(isForegroundHost: Bool) -> TimeInterval {
+        if isPreview || shouldShowInlineControls || isForegroundHost {
             return 1.0 / 60.0
         }
 
-        return isLikelyWallpaperHost ? (1.0 / 8.0) : (1.0 / 30.0)
+        return 1.0 / 30.0
     }
 
     private func isForegroundSaverHost(sessionIsLocked: Bool) -> Bool {
@@ -1084,12 +1120,54 @@ class CodeRainSaverView: ScreenSaverView {
         return NSApplication.shared.isActive || sessionIsLocked || window.isKeyWindow || window.isMainWindow
     }
 
-    private var isLikelyWallpaperHost: Bool {
-        guard let window else {
+    private func shouldSuppressBackdropHost(now: CFTimeInterval, isForegroundHost: Bool) -> Bool {
+        guard !isPreview, !shouldShowInlineControls, !isForegroundHost else {
             return false
         }
 
-        return window.level.rawValue < Int(CGWindowLevelForKey(.screenSaverWindow))
+        return isWallpaperBackdropHost(now: now)
+    }
+
+    private func isWallpaperBackdropHost(now: CFTimeInterval) -> Bool {
+        guard now - lastHostRoleCheck >= 1.0 else {
+            return cachedIsWallpaperBackdropHost
+        }
+
+        lastHostRoleCheck = now
+        cachedIsWallpaperBackdropHost = readWallpaperBackdropHost()
+        return cachedIsWallpaperBackdropHost
+    }
+
+    private func readWallpaperBackdropHost() -> Bool {
+        guard let windowInfo = CGWindowListCopyWindowInfo(.optionAll, kCGNullWindowID) as? [[String: Any]] else {
+            return false
+        }
+
+        let processID = Int32(ProcessInfo.processInfo.processIdentifier)
+        let desktopLayer = CGWindowLevelForKey(.desktopWindow)
+        let matchingWindows = windowInfo.filter { window in
+            guard let ownerPID = window[kCGWindowOwnerPID as String] as? Int32, ownerPID == processID else {
+                return false
+            }
+
+            guard let alpha = window[kCGWindowAlpha as String] as? Double, alpha > 0.01 else {
+                return false
+            }
+
+            return true
+        }
+
+        guard !matchingWindows.isEmpty else {
+            return false
+        }
+
+        return matchingWindows.contains { window in
+            guard let layer = window[kCGWindowLayer as String] as? Int32 else {
+                return false
+            }
+
+            return layer <= desktopLayer
+        }
     }
 
     private func cachedUserSessionLocked(now: CFTimeInterval) -> Bool {
