@@ -404,7 +404,7 @@ class CodeRainSaverView: ScreenSaverView {
         let now = CACurrentMediaTime()
 
         guard hasVisibleRenderHost else {
-            animationTimeInterval = 1.0
+            setAnimationIntervalIfNeeded(1.0)
             lastFrameTimestamp = now
             wasRenderVisible = false
             return
@@ -414,7 +414,7 @@ class CodeRainSaverView: ScreenSaverView {
         let isForegroundHost = isForegroundSaverHost(sessionIsLocked: sessionIsLocked)
         let inlineRenderHost = shouldShowInlineControls
         if shouldSuppressBackdropHost(now: now, isForegroundHost: isForegroundHost) {
-            animationTimeInterval = 1.0
+            setAnimationIntervalIfNeeded(1.0)
             lastFrameTimestamp = now
             wasRenderVisible = false
             return
@@ -424,7 +424,7 @@ class CodeRainSaverView: ScreenSaverView {
             lastFrameTimestamp = now
             wasRenderVisible = true
         }
-        animationTimeInterval = targetFrameInterval(isForegroundHost: isForegroundHost, inlineRenderHost: inlineRenderHost)
+        setAnimationIntervalIfNeeded(targetFrameInterval(isForegroundHost: isForegroundHost, inlineRenderHost: inlineRenderHost))
 
         guard !columns.isEmpty else {
             if !didSetup {
@@ -1129,6 +1129,11 @@ class CodeRainSaverView: ScreenSaverView {
         }
 
         return 1.0 / 30.0
+    }
+
+    private func setAnimationIntervalIfNeeded(_ interval: TimeInterval) {
+        guard abs(animationTimeInterval - interval) > 0.000_1 else { return }
+        animationTimeInterval = interval
     }
 
     private func isForegroundSaverHost(sessionIsLocked: Bool) -> Bool {

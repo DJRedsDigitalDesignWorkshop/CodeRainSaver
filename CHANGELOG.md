@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 ## Unreleased
 - No unreleased changes recorded yet.
 
+## 1.1.16 - 2026-06-08
+- Stopped resetting `ScreenSaverView.animationTimeInterval` every frame.
+- Avoided repeated ScreenSaver framework timer rebuilds and bundle metadata lookups while selected in System Settings.
+- Kept the 1.1.15 cached preview renderer and visual tuning unchanged.
+
 ## 1.1.15 - 2026-06-08
 - Made the System Settings preview reuse cached column strips instead of mutating glyphs continuously.
 - Slowed preview-mode scrolling and reduced preview frame pacing to avoid pegging `legacyScreenSaver`.
