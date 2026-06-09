@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 ## Unreleased
 - No unreleased changes recorded yet.
 
+## 1.1.15 - 2026-06-08
+- Made the System Settings preview reuse cached column strips instead of mutating glyphs continuously.
+- Slowed preview-mode scrolling and reduced preview frame pacing to avoid pegging `legacyScreenSaver`.
+- Kept full-screen playback visually richer while treating Settings as a lightweight preview host.
+
 ## 1.1.14 - 2026-06-08
 - Reduced System Settings preview CPU by limiting preview column-strip redraws to one per frame.
 - Lowered preview-only column count, trail depth, and motion load while preserving the full-screen visual style.

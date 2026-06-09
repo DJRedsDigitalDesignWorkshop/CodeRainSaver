@@ -412,6 +412,7 @@ class CodeRainSaverView: ScreenSaverView {
 
         let sessionIsLocked = cachedUserSessionLocked(now: now)
         let isForegroundHost = isForegroundSaverHost(sessionIsLocked: sessionIsLocked)
+        let inlineRenderHost = shouldShowInlineControls
         if shouldSuppressBackdropHost(now: now, isForegroundHost: isForegroundHost) {
             animationTimeInterval = 1.0
             lastFrameTimestamp = now
@@ -423,7 +424,7 @@ class CodeRainSaverView: ScreenSaverView {
             lastFrameTimestamp = now
             wasRenderVisible = true
         }
-        animationTimeInterval = targetFrameInterval(isForegroundHost: isForegroundHost)
+        animationTimeInterval = targetFrameInterval(isForegroundHost: isForegroundHost, inlineRenderHost: inlineRenderHost)
 
         guard !columns.isEmpty else {
             if !didSetup {
@@ -437,20 +438,24 @@ class CodeRainSaverView: ScreenSaverView {
             lastFrameTimestamp = now
 
             let deltaTime = CGFloat(unclampedDelta.clamped(to: (1.0 / 120.0)...(1.0 / 24.0)))
-            let motionTime = deltaTime * CGFloat(preferences.speedMultiplier)
+            let motionScale: CGFloat = inlineRenderHost ? 0.32 : 1.0
+            let motionTime = deltaTime * CGFloat(preferences.speedMultiplier) * motionScale
             preferencesReloadAccumulator += TimeInterval(deltaTime)
 
             for index in columns.indices {
                 columns[index].headY += columns[index].speed * motionTime
-                columns[index].mutationTimer -= TimeInterval(deltaTime * (0.55 + CGFloat(preferences.speedMultiplier) * 0.35))
 
-                if columns[index].mutationTimer <= 0 {
+                if !inlineRenderHost {
+                    columns[index].mutationTimer -= TimeInterval(deltaTime * (0.55 + CGFloat(preferences.speedMultiplier) * 0.35))
+                }
+
+                if !inlineRenderHost && columns[index].mutationTimer <= 0 {
                     mutateColumn(at: index)
                     columns[index].mutationTimer = columns[index].mutationInterval
                 }
 
                 if columns[index].headY > columns[index].maxHeadY {
-                    wrapColumn(at: index)
+                    wrapColumn(at: index, refreshGlyphs: !inlineRenderHost)
                 }
             }
 
@@ -463,7 +468,10 @@ class CodeRainSaverView: ScreenSaverView {
         if usesCatalinaRenderer {
             needsDisplay = true
         } else {
-            updateRainLayers(renderBudget: columnRenderBudget(isForegroundHost: isForegroundHost))
+            updateRainLayers(
+                renderBudget: columnRenderBudget(isForegroundHost: isForegroundHost, inlineRenderHost: inlineRenderHost),
+                inlineRenderHost: inlineRenderHost
+            )
         }
     }
 
@@ -557,7 +565,8 @@ class CodeRainSaverView: ScreenSaverView {
         let desiredColumnCount = max(12, Int(baseColumnCount * preferences.density))
         let minimumColumnSpacing = max(8.4, fontSize * 0.74)
         let maximumNonOverlappingCount = max(12, Int(bounds.width / minimumColumnSpacing))
-        let performanceColumnCap = shouldShowInlineControls ? 48 : 132
+        let inlineRenderHost = shouldShowInlineControls
+        let performanceColumnCap = inlineRenderHost ? 24 : 132
         let columnCount = min(desiredColumnCount, maximumNonOverlappingCount, performanceColumnCap)
         let spacing = max(minimumColumnSpacing, bounds.width / CGFloat(columnCount))
 
@@ -570,12 +579,13 @@ class CodeRainSaverView: ScreenSaverView {
             needsDisplay = true
         } else {
             rebuildRainLayers()
-            updateRainLayers(renderBudget: shouldShowInlineControls ? 2 : 8)
+            updateRainLayers(renderBudget: inlineRenderHost ? 1 : 8, inlineRenderHost: inlineRenderHost)
         }
     }
 
     private func makeColumn(x: CGFloat, randomHead: Bool) -> Column {
-        let baseLength = randomFloat(in: shouldShowInlineControls ? 24...34 : 44...60)
+        let inlineRenderHost = shouldShowInlineControls
+        let baseLength = randomFloat(in: inlineRenderHost ? 18...24 : 44...60)
         let length = max(14, Int(baseLength * CGFloat(preferences.persistence)))
         let gapDistance = glyphStep * CGFloat(length) * 0.2
         let minHeadY = -gapDistance
@@ -583,7 +593,7 @@ class CodeRainSaverView: ScreenSaverView {
         let headY = randomHead
             ? randomFloat(in: minHeadY...maxHeadY)
             : randomFloat(in: minHeadY...0)
-        let speed = randomFloat(in: shouldShowInlineControls ? 36...72 : 52...112)
+        let speed = randomFloat(in: inlineRenderHost ? 20...38 : 52...112)
         let mutationInterval = makeMutationInterval()
         let glyphs = (0..<length).map { _ in randomGlyph() }
 
@@ -604,12 +614,17 @@ class CodeRainSaverView: ScreenSaverView {
         )
     }
 
-    private func wrapColumn(at index: Int) {
+    private func wrapColumn(at index: Int, refreshGlyphs: Bool = true) {
         var column = columns[index]
         let cycleDistance = column.maxHeadY - column.minHeadY
         while column.headY > column.maxHeadY {
             column.headY -= cycleDistance
         }
+        guard refreshGlyphs else {
+            columns[index] = column
+            return
+        }
+
         column.glyphs = (0..<column.length).map { _ in randomGlyph() }
         column.glowBoost = randomFloat(in: 0.85...1.25)
         column.brightness = randomFloat(in: 0.88...1.08)
@@ -708,7 +723,7 @@ class CodeRainSaverView: ScreenSaverView {
         return image.cgImage(forProposedRect: nil, context: nil, hints: nil)
     }
 
-    private func updateRainLayers(renderBudget: Int = .max) {
+    private func updateRainLayers(renderBudget: Int = .max, inlineRenderHost: Bool = false) {
         guard columnStripLayers.count == columns.count else { return }
 
         var rendersRemaining = renderBudget
@@ -717,7 +732,7 @@ class CodeRainSaverView: ScreenSaverView {
 
         for (columnIndex, column) in columns.enumerated() {
             let strip = columnStripLayers[columnIndex]
-            let activeDepth = min(visibleGlyphDepth, column.length)
+            let activeDepth = min(visibleGlyphDepth(inlineRenderHost: inlineRenderHost), column.length)
 
             if strip.renderedRevision != column.renderRevision ||
                 strip.renderedDepth != activeDepth ||
@@ -839,7 +854,7 @@ class CodeRainSaverView: ScreenSaverView {
         for column in columns {
             let columnBrightness = column.brightness
             let glow = CGFloat(preferences.glow) * column.glowBoost * columnBrightness
-            let activeDepth = min(visibleGlyphDepth, column.length)
+            let activeDepth = min(visibleGlyphDepth(inlineRenderHost: shouldShowInlineControls), column.length)
 
             for offset in 0..<activeDepth {
                 let y = column.headY - (CGFloat(offset) * glyphStep)
@@ -1074,18 +1089,18 @@ class CodeRainSaverView: ScreenSaverView {
         CGFloat.random(in: range)
     }
 
-    private func columnRenderBudget(isForegroundHost: Bool) -> Int {
-        if shouldShowInlineControls {
+    private func columnRenderBudget(isForegroundHost: Bool, inlineRenderHost: Bool) -> Int {
+        if inlineRenderHost {
             return 1
         }
 
         return isForegroundHost ? 2 : 1
     }
 
-    private var visibleGlyphDepth: Int {
-        let baseDepth = shouldShowInlineControls ? 14.0 : 28.0
+    private func visibleGlyphDepth(inlineRenderHost: Bool) -> Int {
+        let baseDepth = inlineRenderHost ? 8.0 : 28.0
         let depth = Int(round(baseDepth * preferences.persistence))
-        return max(12, min(shouldShowInlineControls ? 36 : 56, depth))
+        return max(8, min(inlineRenderHost ? 18 : 56, depth))
     }
 
     private var hasVisibleRenderHost: Bool {
@@ -1104,8 +1119,12 @@ class CodeRainSaverView: ScreenSaverView {
         return true
     }
 
-    private func targetFrameInterval(isForegroundHost: Bool) -> TimeInterval {
-        if isPreview || shouldShowInlineControls || isForegroundHost {
+    private func targetFrameInterval(isForegroundHost: Bool, inlineRenderHost: Bool) -> TimeInterval {
+        if inlineRenderHost {
+            return 1.0 / 24.0
+        }
+
+        if isForegroundHost {
             return 1.0 / 60.0
         }
 
