@@ -5,6 +5,11 @@ All notable changes to this project will be documented in this file.
 ## Unreleased
 - No unreleased changes recorded yet.
 
+## 1.1.14 - 2026-06-08
+- Reduced System Settings preview CPU by limiting preview column-strip redraws to one per frame.
+- Lowered preview-only column count, trail depth, and motion load while preserving the full-screen visual style.
+- Slowed glyph mutation churn so CodeRain does not continuously re-rasterize tall column strips while selected in Settings.
+
 ## 1.1.13 - 2026-05-09
 - Added a per-frame column-strip render budget to prevent CPU spikes when many glyphs mutate at once.
 - Slowed glyph mutation churn so dense scenes do not constantly re-rasterize tall column images.

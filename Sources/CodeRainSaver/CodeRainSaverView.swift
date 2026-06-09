@@ -557,7 +557,7 @@ class CodeRainSaverView: ScreenSaverView {
         let desiredColumnCount = max(12, Int(baseColumnCount * preferences.density))
         let minimumColumnSpacing = max(8.4, fontSize * 0.74)
         let maximumNonOverlappingCount = max(12, Int(bounds.width / minimumColumnSpacing))
-        let performanceColumnCap = isPreview ? 80 : 132
+        let performanceColumnCap = shouldShowInlineControls ? 48 : 132
         let columnCount = min(desiredColumnCount, maximumNonOverlappingCount, performanceColumnCap)
         let spacing = max(minimumColumnSpacing, bounds.width / CGFloat(columnCount))
 
@@ -570,12 +570,12 @@ class CodeRainSaverView: ScreenSaverView {
             needsDisplay = true
         } else {
             rebuildRainLayers()
-            updateRainLayers(renderBudget: 8)
+            updateRainLayers(renderBudget: shouldShowInlineControls ? 2 : 8)
         }
     }
 
     private func makeColumn(x: CGFloat, randomHead: Bool) -> Column {
-        let baseLength = randomFloat(in: isPreview ? 28...40 : 44...60)
+        let baseLength = randomFloat(in: shouldShowInlineControls ? 24...34 : 44...60)
         let length = max(14, Int(baseLength * CGFloat(preferences.persistence)))
         let gapDistance = glyphStep * CGFloat(length) * 0.2
         let minHeadY = -gapDistance
@@ -583,7 +583,7 @@ class CodeRainSaverView: ScreenSaverView {
         let headY = randomHead
             ? randomFloat(in: minHeadY...maxHeadY)
             : randomFloat(in: minHeadY...0)
-        let speed = randomFloat(in: isPreview ? 42...88 : 52...112)
+        let speed = randomFloat(in: shouldShowInlineControls ? 36...72 : 52...112)
         let mutationInterval = makeMutationInterval()
         let glyphs = (0..<length).map { _ in randomGlyph() }
 
@@ -634,7 +634,7 @@ class CodeRainSaverView: ScreenSaverView {
 
     private func makeMutationInterval() -> TimeInterval {
         let persistenceScale = max(0.85, min(1.35, preferences.persistence / 3.18))
-        return Double.random(in: 1.35...2.75) * persistenceScale
+        return Double.random(in: 2.4...4.8) * persistenceScale
     }
 
     private func makeBackgroundImage() -> CGImage? {
@@ -1075,17 +1075,17 @@ class CodeRainSaverView: ScreenSaverView {
     }
 
     private func columnRenderBudget(isForegroundHost: Bool) -> Int {
-        if isPreview || shouldShowInlineControls {
-            return 10
+        if shouldShowInlineControls {
+            return 1
         }
 
-        return isForegroundHost ? 3 : 1
+        return isForegroundHost ? 2 : 1
     }
 
     private var visibleGlyphDepth: Int {
-        let baseDepth = isPreview ? 19.0 : 28.0
+        let baseDepth = shouldShowInlineControls ? 14.0 : 28.0
         let depth = Int(round(baseDepth * preferences.persistence))
-        return max(16, min(56, depth))
+        return max(12, min(shouldShowInlineControls ? 36 : 56, depth))
     }
 
     private var hasVisibleRenderHost: Bool {
