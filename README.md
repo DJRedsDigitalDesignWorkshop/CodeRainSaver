@@ -16,8 +16,8 @@ Both are packaged as standalone `.pkg` installers in the release artifacts so th
 
 ## Included In Public Releases
 
-- `CodeRainAppleSilicon-1.1.17-Apple-Silicon.pkg`
-- `CodeRainIntel-1.1.17-Ventura-Intel.pkg`
+- `CodeRainAppleSilicon-1.1.18-Apple-Silicon.pkg`
+- `CodeRainIntel-1.1.18-Ventura-Intel.pkg`
 
 The experimental `CodeRainCatalina` target stays in the source tree, but it is not part of the public release set.
 
@@ -52,23 +52,18 @@ xcodebuild -project CodeRainSaver.xcodeproj -scheme CodeRainIntel -configuration
 To build signed installer packages:
 
 ```sh
+BUNDLE_SIGNING_IDENTITY="Developer ID Application: Your Name (TEAMID)" \
 PKG_SIGNING_IDENTITY="Developer ID Installer: Your Name (TEAMID)" \
+NOTARYTOOL_PROFILE="your-notarytool-profile" \
 Scripts/build_release_installers.sh
 ```
 
-To sign the `.saver` bundles with a local Apple Development certificate before packaging:
+To sign the `.saver` bundles with a local Apple Development certificate for smoke testing only:
 
 ```sh
 BUNDLE_SIGNING_IDENTITY="Apple Development: Your Name (TEAMID)" \
 ALLOW_UNSIGNED_PACKAGES=1 \
-Scripts/build_release_installers.sh
-```
-
-Optional notarization:
-
-```sh
-PKG_SIGNING_IDENTITY="Developer ID Installer: Your Name (TEAMID)" \
-NOTARYTOOL_PROFILE="your-notarytool-profile" \
+ALLOW_DEVELOPMENT_BUNDLE_SIGNING=1 \
 Scripts/build_release_installers.sh
 ```
 

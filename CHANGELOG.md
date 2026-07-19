@@ -5,6 +5,10 @@ All notable changes to this project will be documented in this file.
 ## Unreleased
 - No unreleased changes recorded yet.
 
+## 1.1.18 - 2026-07-19
+- Stopped suppressing visible desktop-layer legacy hosts so real screen saver playback cannot freeze after one frame on some M1 Macs.
+- Hardened release signing checks so public builds require Developer ID Application, Developer ID Installer, and notarization credentials instead of accepting Apple Development signing.
+
 ## 1.1.17 - 2026-07-19
 - Normalized full-screen glyph sizing against the native display pixel size so Retina display scaling does not make glyphs unexpectedly larger on similar M1 laptops.
 - Kept preview sizing based on the preview panel dimensions so System Settings stays readable.

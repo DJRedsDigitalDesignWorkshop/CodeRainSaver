@@ -14,6 +14,7 @@ BUNDLE_SIGNING_IDENTITY="${BUNDLE_SIGNING_IDENTITY:-}"
 PKG_SIGNING_IDENTITY="${PKG_SIGNING_IDENTITY:-}"
 NOTARYTOOL_PROFILE="${NOTARYTOOL_PROFILE:-}"
 ALLOW_UNSIGNED_PACKAGES="${ALLOW_UNSIGNED_PACKAGES:-0}"
+ALLOW_DEVELOPMENT_BUNDLE_SIGNING="${ALLOW_DEVELOPMENT_BUNDLE_SIGNING:-0}"
 
 if [[ "$VERSION" == *'$('* || -z "$VERSION" ]]; then
   VERSION=""
@@ -33,9 +34,41 @@ if [[ -n "$XCODEGEN_BIN" ]]; then
   "$XCODEGEN_BIN" generate --spec "$ROOT_DIR/project.yml"
 fi
 
-if [[ -z "$PKG_SIGNING_IDENTITY" && "$ALLOW_UNSIGNED_PACKAGES" != "1" ]]; then
+if [[ -n "$BUNDLE_SIGNING_IDENTITY" && "$BUNDLE_SIGNING_IDENTITY" != Developer\ ID\ Application:* && "$ALLOW_DEVELOPMENT_BUNDLE_SIGNING" != "1" ]]; then
+  cat >&2 <<EOF
+error: BUNDLE_SIGNING_IDENTITY must be a Developer ID Application identity for release builds.
+Set ALLOW_DEVELOPMENT_BUNDLE_SIGNING=1 only for local smoke tests with Apple Development certificates.
+EOF
+  exit 1
+fi
+
+if [[ -n "$PKG_SIGNING_IDENTITY" && "$PKG_SIGNING_IDENTITY" != Developer\ ID\ Installer:* ]]; then
+  cat >&2 <<EOF
+error: PKG_SIGNING_IDENTITY must be a Developer ID Installer identity.
+Apple Development certificates cannot sign installer packages for public distribution.
+EOF
+  exit 1
+fi
+
+if [[ "$ALLOW_UNSIGNED_PACKAGES" != "1" && -z "$BUNDLE_SIGNING_IDENTITY" ]]; then
+  cat >&2 <<EOF
+error: BUNDLE_SIGNING_IDENTITY must be set to a valid Developer ID Application identity.
+Set ALLOW_UNSIGNED_PACKAGES=1 only for local smoke tests.
+EOF
+  exit 1
+fi
+
+if [[ "$ALLOW_UNSIGNED_PACKAGES" != "1" && -z "$PKG_SIGNING_IDENTITY" ]]; then
   cat >&2 <<EOF
 error: PKG_SIGNING_IDENTITY must be set to a valid Developer ID Installer identity.
+Set ALLOW_UNSIGNED_PACKAGES=1 only for local smoke tests.
+EOF
+  exit 1
+fi
+
+if [[ "$ALLOW_UNSIGNED_PACKAGES" != "1" && -z "$NOTARYTOOL_PROFILE" ]]; then
+  cat >&2 <<EOF
+error: NOTARYTOOL_PROFILE must be set for public release builds so installers are notarized and stapled.
 Set ALLOW_UNSIGNED_PACKAGES=1 only for local smoke tests.
 EOF
   exit 1
@@ -71,12 +104,23 @@ xcodebuild \
 sign_bundle() {
   local bundle_name="$1"
   local bundle_path="$RELEASE_ROOT/$bundle_name.saver"
+  local -a codesign_args=(
+    --force
+    --sign "$BUNDLE_SIGNING_IDENTITY"
+  )
 
   if [[ -z "$BUNDLE_SIGNING_IDENTITY" ]]; then
+    echo "warning: leaving $bundle_name.saver ad-hoc signed for local smoke testing" >&2
     return
   fi
 
-  codesign --force --sign "$BUNDLE_SIGNING_IDENTITY" --timestamp=none "$bundle_path"
+  if [[ "$BUNDLE_SIGNING_IDENTITY" == Developer\ ID\ Application:* ]]; then
+    codesign_args+=(--options runtime --timestamp)
+  else
+    codesign_args+=(--timestamp=none)
+  fi
+
+  codesign "${codesign_args[@]}" "$bundle_path"
   codesign --verify --strict --verbose=2 "$bundle_path"
 }
 
@@ -127,6 +171,11 @@ notarize_pkg() {
 
 build_pkg "CodeRainAppleSilicon" "CodeRainAppleSilicon" "com.justinmarsh.coderainapplesilicon.pkg" "CodeRainAppleSilicon-$VERSION-Apple-Silicon.pkg"
 build_pkg "CodeRainIntel" "CodeRainIntel" "com.justinmarsh.coderainintel.pkg" "CodeRainIntel-$VERSION-Ventura-Intel.pkg"
+
+if [[ -n "$PKG_SIGNING_IDENTITY" ]]; then
+  pkgutil --check-signature "$DIST_ROOT/CodeRainAppleSilicon-$VERSION-Apple-Silicon.pkg"
+  pkgutil --check-signature "$DIST_ROOT/CodeRainIntel-$VERSION-Ventura-Intel.pkg"
+fi
 
 if [[ -n "$PKG_SIGNING_IDENTITY" && -n "$NOTARYTOOL_PROFILE" ]]; then
   notarize_pkg "$DIST_ROOT/CodeRainAppleSilicon-$VERSION-Apple-Silicon.pkg"

@@ -1,14 +1,14 @@
-# CodeRainSaver 1.1.17
+# CodeRainSaver 1.1.18
 
 This public release includes the two supported installer builds:
 
-- `CodeRainAppleSilicon-1.1.17-Apple-Silicon.pkg`: native Apple Silicon build for current macOS releases.
-- `CodeRainIntel-1.1.17-Ventura-Intel.pkg`: Intel-compatible build for macOS Ventura 13.
+- `CodeRainAppleSilicon-1.1.18-Apple-Silicon.pkg`: native Apple Silicon build for current macOS releases.
+- `CodeRainIntel-1.1.18-Ventura-Intel.pkg`: Intel-compatible build for macOS Ventura 13.
 
 Both installers place the screen saver in `/Library/Screen Savers` so it appears in System Settings after install.
 
-This update normalizes full-screen glyph sizing against each display's native pixel size, so Retina display scaling should not make glyphs unexpectedly larger on similar M1 laptops. The Glyph Size slider remains available in the options sheet and companion controls app for manual tuning.
+This update prevents visible screen saver playback from freezing after one frame on some M1 Macs where macOS reports the full-screen saver host as a desktop-layer legacy host.
 
-The bundled `.saver` files in these local builds are signed with an Apple Development certificate. The `.pkg` wrappers are not Developer ID signed or notarized unless rebuilt with `PKG_SIGNING_IDENTITY` and `NOTARYTOOL_PROFILE`.
+The release script now requires Developer ID Application, Developer ID Installer, and notarization credentials for proper public signing. Apple Development signing is allowed only when explicitly enabled for local smoke tests.
 
 The `CodeRainCatalina` target remains experimental and is not included in the public release assets.

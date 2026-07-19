@@ -1186,7 +1186,12 @@ class CodeRainSaverView: ScreenSaverView {
             return false
         }
 
-        return isWallpaperBackdropHost(now: now)
+        // Some real full-screen saver hosts are reported as desktop-layer
+        // legacy hosts on certain macOS/M1 combinations. Rendering is now
+        // cheap enough that avoiding a false freeze is more important than
+        // suppressing a visible backdrop host.
+        _ = now
+        return false
     }
 
     private func isWallpaperBackdropHost(now: CFTimeInterval) -> Bool {
