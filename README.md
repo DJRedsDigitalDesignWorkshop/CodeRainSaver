@@ -16,8 +16,8 @@ Both are packaged as standalone `.pkg` installers in the release artifacts so th
 
 ## Included In Public Releases
 
-- `CodeRainAppleSilicon-1.1.16-Apple-Silicon.pkg`
-- `CodeRainIntel-1.1.16-Ventura-Intel.pkg`
+- `CodeRainAppleSilicon-1.1.17-Apple-Silicon.pkg`
+- `CodeRainIntel-1.1.17-Ventura-Intel.pkg`
 
 The experimental `CodeRainCatalina` target stays in the source tree, but it is not part of the public release set.
 
@@ -56,6 +56,14 @@ PKG_SIGNING_IDENTITY="Developer ID Installer: Your Name (TEAMID)" \
 Scripts/build_release_installers.sh
 ```
 
+To sign the `.saver` bundles with a local Apple Development certificate before packaging:
+
+```sh
+BUNDLE_SIGNING_IDENTITY="Apple Development: Your Name (TEAMID)" \
+ALLOW_UNSIGNED_PACKAGES=1 \
+Scripts/build_release_installers.sh
+```
+
 Optional notarization:
 
 ```sh
@@ -73,4 +81,5 @@ ALLOW_UNSIGNED_PACKAGES=1 Scripts/build_release_installers.sh
 ## Notes
 
 - The screen saver options sheet is unreliable on some newer macOS hosts.
+- Use the Glyph Size slider to manually tune glyph size after the automatic display-size baseline is applied.
 - Releases are labeled by compatibility first so it is obvious which installer to use.

@@ -550,8 +550,7 @@ class CodeRainSaverView: ScreenSaverView {
         columns.removeAll(keepingCapacity: true)
         configureLayerTree()
 
-        let minDimension = min(bounds.width, bounds.height)
-        let scale = max(0.68, min(1.45, minDimension / 900.0))
+        let scale = glyphAutoScale()
         let fontSize = (isPreview ? 16.5 : 21.5) * scale * preferences.glyphScale
         glyphFont = NSFont(name: "HiraginoSans-W5", size: fontSize) ?? NSFont(name: "HiraginoSans-W6", size: fontSize) ?? NSFont.monospacedSystemFont(ofSize: fontSize, weight: .bold)
         headGlyphFont = NSFont(name: "HiraginoSans-W7", size: fontSize * 1.02) ?? NSFont(name: "HiraginoSans-W8", size: fontSize * 1.02) ?? NSFont.monospacedSystemFont(ofSize: fontSize * 1.02, weight: .heavy)
@@ -841,6 +840,44 @@ class CodeRainSaverView: ScreenSaverView {
 
     private func currentContentsScale() -> CGFloat {
         window?.backingScaleFactor ?? NSScreen.main?.backingScaleFactor ?? 2.0
+    }
+
+    private func glyphAutoScale() -> CGFloat {
+        if isPreview || shouldShowInlineControls {
+            return glyphAutoScale(forLogicalMinDimension: min(bounds.width, bounds.height))
+        }
+
+        if let nativePixelSize = currentScreenNativePixelSize() {
+            let nativeMinDimension = min(nativePixelSize.width, nativePixelSize.height)
+            return glyphAutoScale(forNativePixelMinDimension: nativeMinDimension)
+        }
+
+        let fallbackPixelMinDimension = min(bounds.width, bounds.height) * currentContentsScale()
+        return glyphAutoScale(forNativePixelMinDimension: fallbackPixelMinDimension)
+    }
+
+    private func glyphAutoScale(forLogicalMinDimension minDimension: CGFloat) -> CGFloat {
+        max(0.68, min(1.45, minDimension / 900.0))
+    }
+
+    private func glyphAutoScale(forNativePixelMinDimension minDimension: CGFloat) -> CGFloat {
+        max(0.68, min(1.45, minDimension / 1600.0))
+    }
+
+    private func currentScreenNativePixelSize() -> CGSize? {
+        let screen = window?.screen ?? NSScreen.main
+        guard
+            let screenNumber = screen?.deviceDescription[NSDeviceDescriptionKey("NSScreenNumber")] as? NSNumber
+        else {
+            return nil
+        }
+
+        let displayID = CGDirectDisplayID(screenNumber.uint32Value)
+        let width = CGDisplayPixelsWide(displayID)
+        let height = CGDisplayPixelsHigh(displayID)
+        guard width > 0, height > 0 else { return nil }
+
+        return CGSize(width: width, height: height)
     }
 
     private func drawCatalinaRain(in rect: NSRect) {

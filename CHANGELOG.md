@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 ## Unreleased
 - No unreleased changes recorded yet.
 
+## 1.1.17 - 2026-07-19
+- Normalized full-screen glyph sizing against the native display pixel size so Retina display scaling does not make glyphs unexpectedly larger on similar M1 laptops.
+- Kept preview sizing based on the preview panel dimensions so System Settings stays readable.
+- Documented the Glyph Size slider as the manual size adjustment on top of the automatic display baseline.
+- Added an optional `BUNDLE_SIGNING_IDENTITY` release-script setting for signing `.saver` bundles before packaging.
+
 ## 1.1.16 - 2026-06-08
 - Stopped resetting `ScreenSaverView.animationTimeInterval` every frame.
 - Avoided repeated ScreenSaver framework timer rebuilds and bundle metadata lookups while selected in System Settings.

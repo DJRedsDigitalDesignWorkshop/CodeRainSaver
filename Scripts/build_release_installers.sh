@@ -10,6 +10,7 @@ STAGING_ROOT="$BUILD_ROOT/release-staging"
 DIST_ROOT="$ROOT_DIR/dist"
 DERIVED_DATA_ROOT="$BUILD_ROOT/DerivedData"
 VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$ROOT_DIR/Info.plist" 2>/dev/null || true)"
+BUNDLE_SIGNING_IDENTITY="${BUNDLE_SIGNING_IDENTITY:-}"
 PKG_SIGNING_IDENTITY="${PKG_SIGNING_IDENTITY:-}"
 NOTARYTOOL_PROFILE="${NOTARYTOOL_PROFILE:-}"
 ALLOW_UNSIGNED_PACKAGES="${ALLOW_UNSIGNED_PACKAGES:-0}"
@@ -66,6 +67,21 @@ xcodebuild \
   SYMROOT="$BUILD_ROOT" \
   OBJROOT="$BUILD_ROOT/Intermediates.noindex" \
   build
+
+sign_bundle() {
+  local bundle_name="$1"
+  local bundle_path="$RELEASE_ROOT/$bundle_name.saver"
+
+  if [[ -z "$BUNDLE_SIGNING_IDENTITY" ]]; then
+    return
+  fi
+
+  codesign --force --sign "$BUNDLE_SIGNING_IDENTITY" --timestamp=none "$bundle_path"
+  codesign --verify --strict --verbose=2 "$bundle_path"
+}
+
+sign_bundle "CodeRainAppleSilicon"
+sign_bundle "CodeRainIntel"
 
 if [[ -z "$VERSION" ]]; then
   VERSION="$(/usr/libexec/PlistBuddy -c 'Print :CFBundleShortVersionString' "$RELEASE_ROOT/CodeRainAppleSilicon.saver/Contents/Info.plist" 2>/dev/null || true)"
