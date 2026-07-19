@@ -9,4 +9,6 @@ Both installers place the screen saver in `/Library/Screen Savers` so it appears
 
 This update normalizes full-screen glyph sizing against each display's native pixel size, so Retina display scaling should not make glyphs unexpectedly larger on similar M1 laptops. The Glyph Size slider remains available in the options sheet and companion controls app for manual tuning.
 
+The bundled `.saver` files in these local builds are signed with an Apple Development certificate. The `.pkg` wrappers are not Developer ID signed or notarized unless rebuilt with `PKG_SIGNING_IDENTITY` and `NOTARYTOOL_PROFILE`.
+
 The `CodeRainCatalina` target remains experimental and is not included in the public release assets.
