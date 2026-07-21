@@ -976,7 +976,9 @@ class CodeRainSaverView: ScreenSaverView {
             }
 
             _ = glow
-            return (glyphSprite(for: glyph, style: style), alpha, CGFloat(activeDepth - 1 - offset) * glyphStep)
+            // The texture's bright head belongs at the lower edge while older
+            // glyphs extend above it in the direction the column came from.
+            return (glyphSprite(for: glyph, style: style), alpha, CGFloat(offset) * glyphStep)
         }
 
         let glowSprites = (0..<min(activeDepth, 3)).map { offset -> (sprite: GlyphSprite, alpha: CGFloat, y: CGFloat) in
@@ -987,7 +989,7 @@ class CodeRainSaverView: ScreenSaverView {
             let glyph = column.glyphs[offset]
             let style: GlyphStyle = offset == 0 ? .headGlow : .brightGlow
             let alpha: CGFloat = offset == 0 ? 0.085 * glow : 0.03 * glow * baseAlpha
-            return (glyphSprite(for: glyph, style: style), alpha, CGFloat(activeDepth - 1 - offset) * glyphStep - (offset == 0 ? 1 : 0))
+            return (glyphSprite(for: glyph, style: style), alpha, CGFloat(offset) * glyphStep - (offset == 0 ? 1 : 0))
         }
 
         let imageSize = NSSize(

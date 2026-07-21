@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ## Unreleased
 - No unreleased changes recorded yet.
 
+## 1.1.19 - 2026-07-21
+- Corrected cached rain-strip orientation so trails follow above downward-moving column heads.
+
 ## 1.1.18 - 2026-07-19
 - Stopped suppressing visible desktop-layer legacy hosts so real screen saver playback cannot freeze after one frame on some M1 Macs.
 - Hardened release signing checks so public builds require Developer ID Application, Developer ID Installer, and notarization credentials instead of accepting Apple Development signing.
