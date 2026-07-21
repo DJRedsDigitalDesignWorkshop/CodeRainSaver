@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ## Unreleased
 - No unreleased changes recorded yet.
 
+## 1.1.20 - 2026-07-21
+- Prevented the System Settings options host from crashing when it initializes the saver with a temporary zero-sized frame.
+
 ## 1.1.19 - 2026-07-21
 - Corrected cached rain-strip orientation so trails follow above downward-moving column heads.
 

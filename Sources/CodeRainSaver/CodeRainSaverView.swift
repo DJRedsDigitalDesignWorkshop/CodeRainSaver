@@ -546,9 +546,22 @@ class CodeRainSaverView: ScreenSaverView {
     }
 
     private func rebuildColumns() {
-        didSetup = true
         columns.removeAll(keepingCapacity: true)
         configureLayerTree()
+
+        // The separate System Settings options host may initialize the saver at
+        // 0 x 0 before requesting its configure sheet. Defer image creation until
+        // AppKit supplies a drawable frame instead of throwing NSImageCacheException.
+        guard bounds.width >= 1, bounds.height >= 1 else {
+            didSetup = false
+            backgroundImage = nil
+            if !usesCatalinaRenderer {
+                rebuildRainLayers()
+            }
+            return
+        }
+
+        didSetup = true
 
         let scale = glyphAutoScale()
         let fontSize = (isPreview ? 16.5 : 21.5) * scale * preferences.glyphScale
@@ -652,6 +665,8 @@ class CodeRainSaverView: ScreenSaverView {
     }
 
     private func makeBackgroundImage() -> CGImage? {
+        guard bounds.width >= 1, bounds.height >= 1 else { return nil }
+
         let image = NSImage(size: bounds.size)
         image.lockFocus()
         defer { image.unlockFocus() }
