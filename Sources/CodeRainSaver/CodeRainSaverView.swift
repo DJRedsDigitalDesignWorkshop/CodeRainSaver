@@ -591,7 +591,10 @@ class CodeRainSaverView: ScreenSaverView {
             needsDisplay = true
         } else {
             rebuildRainLayers()
-            updateRainLayers(renderBudget: inlineRenderHost ? 1 : 8, inlineRenderHost: inlineRenderHost)
+            // A glyph-size change replaces every strip image. Render the complete
+            // initial frame now: some screen-saver hosts throttle or skip later
+            // animation callbacks, which otherwise leaves the later columns blank.
+            updateRainLayers(renderBudget: .max, inlineRenderHost: inlineRenderHost)
         }
     }
 
